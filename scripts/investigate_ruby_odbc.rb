@@ -65,14 +65,6 @@ begin
     puts "-" * 30
 
     # Try to get various scope information
-    scope_methods = [
-      :get_info,
-      :connected?,
-      :database,
-      :server,
-      :dsn,
-      :user
-    ]
 
     available_methods = db.methods.sort - Object.methods
     puts "Available connection methods (sample):"
@@ -93,34 +85,30 @@ begin
     }
 
     info_types.each do |name, code|
-      begin
-        value = db.get_info(code)
-        puts "  #{name}: #{value.inspect}"
-      rescue => e
-        puts "  #{name}: [error: #{e.message}]"
-      end
+      value = db.get_info(code)
+      puts "  #{name}: #{value.inspect}"
+    rescue StandardError => e
+      puts "  #{name}: [error: #{e.message}]"
     end
     puts
 
     # Try using constant names if available
     puts "Attempting with ODBC constants (if defined):"
-    [
-      "SQL_DATABASE_NAME",
-      "SQL_SERVER_NAME",
-      "SQL_DATA_SOURCE_NAME",
-      "SQL_USER_NAME"
+    %w[
+      SQL_DATABASE_NAME
+      SQL_SERVER_NAME
+      SQL_DATA_SOURCE_NAME
+      SQL_USER_NAME
     ].each do |const_name|
-      begin
-        if ODBC.const_defined?(const_name)
-          const_value = ODBC.const_get(const_name)
-          value = db.get_info(const_value)
-          puts "  #{const_name}: #{value.inspect}"
-        else
-          puts "  #{const_name}: [constant not defined]"
-        end
-      rescue => e
-        puts "  #{const_name}: [error: #{e.message}]"
+      if ODBC.const_defined?(const_name)
+        const_value = ODBC.const_get(const_name)
+        value = db.get_info(const_value)
+        puts "  #{const_name}: #{value.inspect}"
+      else
+        puts "  #{const_name}: [constant not defined]"
       end
+    rescue StandardError => e
+      puts "  #{const_name}: [error: #{e.message}]"
     end
     puts
 
@@ -161,7 +149,7 @@ begin
     puts "fetch_all return value class: #{records.class}"
     puts "Number of records: #{records.length}"
 
-    if records && !records.empty?
+    if records.present?
       first_record = records.first
       puts "\nFirst record:"
       puts "  Class: #{first_record.class}"
@@ -201,14 +189,14 @@ begin
     puts "5. MARSHAL TEST"
     puts "-" * 50
 
-    if records && !records.empty?
+    if records.present?
       # Test if we can marshal the data
       begin
         marshaled = Marshal.dump(records)
         puts "✓ Records can be marshaled"
         puts "  Marshaled size: #{marshaled.bytesize} bytes"
 
-        unmarshaled = Marshal.load(marshaled)
+        unmarshaled = Marshal.load(marshaled) # rubocop:disable Security/MarshalLoad
         puts "✓ Records can be unmarshaled"
         puts "  Data preserved: #{records == unmarshaled}"
 
@@ -220,7 +208,7 @@ begin
             puts "  ⚠ Type changed for field #{idx}: #{orig_class} -> #{restored_class}"
           end
         end
-      rescue => e
+      rescue StandardError => e
         puts "✗ Marshal failed: #{e.message}"
       end
     end
@@ -244,15 +232,14 @@ begin
           puts "  Has #type method: #{columns_array.first.type}"
         end
       end
-    rescue => e
+    rescue StandardError => e
       puts "columns(true) error: #{e.message}"
     end
     puts
 
     statement.drop
   end
-
-rescue => e
+rescue StandardError => e
   puts "✗ Error: #{e.message}"
   puts e.backtrace.first(5)
 end
