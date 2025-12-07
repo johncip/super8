@@ -60,10 +60,10 @@ begin
     puts "✓ Connection successful"
     puts "Connection class: #{db.class}"
     puts
-    
+
     puts "Connection scope information:"
     puts "-" * 30
-    
+
     # Try to get various scope information
     scope_methods = [
       :get_info,
@@ -73,13 +73,13 @@ begin
       :dsn,
       :user
     ]
-    
+
     available_methods = db.methods.sort - Object.methods
     puts "Available connection methods (sample):"
     puts available_methods.first(20).join(", ")
     puts "... (#{available_methods.length} total methods)"
     puts
-    
+
     # Try get_info with various ODBC info types
     puts "Attempting to query connection metadata via get_info:"
     info_types = {
@@ -91,7 +91,7 @@ begin
       "SQL_DRIVER_NAME" => 6,        # Driver name
       "SQL_USER_NAME" => 47          # Username
     }
-    
+
     info_types.each do |name, code|
       begin
         value = db.get_info(code)
@@ -101,12 +101,12 @@ begin
       end
     end
     puts
-    
+
     # Try using constant names if available
     puts "Attempting with ODBC constants (if defined):"
     [
       "SQL_DATABASE_NAME",
-      "SQL_SERVER_NAME", 
+      "SQL_SERVER_NAME",
       "SQL_DATA_SOURCE_NAME",
       "SQL_USER_NAME"
     ].each do |const_name|
@@ -123,29 +123,29 @@ begin
       end
     end
     puts
-    
+
     puts "2. QUERY EXECUTION"
     puts "-" * 50
-    
+
     statement = db.run(query)
     puts "Statement class: #{statement.class}"
     puts "Statement methods: #{statement.methods.sort - Object.methods}"
     puts
-    
+
     puts "3. COLUMN METADATA"
     puts "-" * 50
-    
+
     columns = statement.columns
     puts "Columns return value class: #{columns.class}"
     puts "Columns structure:"
     pp columns
     puts
-    
+
     if columns.is_a?(Hash)
       puts "Columns is a Hash with:"
       puts "  Keys (column names): #{columns.keys}"
       puts "  Values: #{columns.values}"
-      
+
       first_col_name, first_col_value = columns.first
       puts "\nFirst column details:"
       puts "  Name: #{first_col_name.inspect}"
@@ -153,14 +153,14 @@ begin
       puts "  Value class: #{first_col_value.class}"
     end
     puts
-    
+
     puts "4. RESPONSE DATA"
     puts "-" * 50
-    
+
     records = statement.fetch_all
     puts "fetch_all return value class: #{records.class}"
     puts "Number of records: #{records.length}"
-    
+
     if records && !records.empty?
       first_record = records.first
       puts "\nFirst record:"
@@ -169,13 +169,13 @@ begin
       puts "  Content:"
       pp first_record
       puts
-      
+
       puts "Field type analysis:"
       first_record.each_with_index do |field, idx|
         puts "  Field #{idx}: #{field.class} - #{field.inspect[0..50]}"
       end
       puts
-      
+
       puts "Checking for typed data:"
       first_record.each_with_index do |field, idx|
         case field
@@ -197,21 +197,21 @@ begin
       end
     end
     puts
-    
+
     puts "5. MARSHAL TEST"
     puts "-" * 50
-    
+
     if records && !records.empty?
       # Test if we can marshal the data
       begin
         marshaled = Marshal.dump(records)
         puts "✓ Records can be marshaled"
         puts "  Marshaled size: #{marshaled.bytesize} bytes"
-        
+
         unmarshaled = Marshal.load(marshaled)
         puts "✓ Records can be unmarshaled"
         puts "  Data preserved: #{records == unmarshaled}"
-        
+
         # Check if types are preserved
         records.first.each_with_index do |field, idx|
           orig_class = field.class
@@ -225,10 +225,10 @@ begin
       end
     end
     puts
-    
+
     puts "6. COLUMN METADATA via #columns method"
     puts "-" * 50
-    
+
     # Try getting column as array
     begin
       columns_array = statement.columns(true)
@@ -248,10 +248,10 @@ begin
       puts "columns(true) error: #{e.message}"
     end
     puts
-    
+
     statement.drop
   end
-  
+
 rescue => e
   puts "✗ Error: #{e.message}"
   puts e.backtrace.first(5)
