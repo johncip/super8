@@ -60,12 +60,17 @@ Support parameters even though not currently used—likely needed soon:
 - Must capture at intercept time, not query later
 - ruby-odbc maintains template/params separately (re-execution works)
 
-### Matching Strategy Decision (TBD)
+### Matching Strategy Decision
+
+**Decision: Strict fail with descriptive diff.**
 
 If user refactors `db.run("...?", val)` to `db.run("...'val'")`:
-- [ ] Fail (strict: query structure changed)
-- [ ] Warn (structure changed but semantically equivalent)
-- [ ] Match (normalize both for comparison)
+- Playback fails immediately
+- Error message shows diff: expected SQL/params vs actual
+- User must re-record the cassette
+
+Rationale: Simpler to implement, safer (forces explicit re-recording), and the cassette
+format already stores `sql` and `params` separately—enough info for a helpful error.
 
 ## Phase 4: Everything Else
 

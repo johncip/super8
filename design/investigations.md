@@ -213,10 +213,8 @@ A: TBD. Start with exact match. Consider whitespace/case normalization if needed
 
 **Q: What happens if user refactors parameterized → literal SQL (or vice versa)?**
 
-A: TBD. Options:
-- Fail (strict: query structure changed)
-- Warn (structure changed but semantically equivalent)
-- Match (normalize both for comparison)
+A: ✅ Decided — Strict fail with descriptive diff. Cassette stores `sql` and `params`
+separately, so error can show exactly what changed. User must re-record.
 
 **Q: Error message design for query mismatches?**
 
