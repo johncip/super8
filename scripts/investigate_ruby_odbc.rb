@@ -43,7 +43,12 @@ puts "=== Ruby-ODBC Investigation ==="
 puts
 
 # Test query - simple one to minimize data
-query = "SELECT TOP 1 * FROM CUSTOMERS"
+query = <<~SQL
+  SELECT FFDDIVN, FFDCUSN, FFDCNMB, FFDSLNB, FFDCMPN
+  FROM FFDCSTBP
+  WHERE FFDCMPN = '  1'
+  LIMIT 1
+SQL
 
 puts "1. CONNECTION API & SCOPE"
 puts "-" * 50
