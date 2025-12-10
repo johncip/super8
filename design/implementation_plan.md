@@ -12,7 +12,7 @@ Living TODO list for building Super8.
 - [x] Confirm two-phase model (execute → fetch) for all query methods
 - [x] Document which methods to intercept (see api_support.md)
 - [x] Design cassette format for command log style (see cassette_schema.md)
-- [ ] Decide matching strategy for parameterized vs literal SQL refactoring
+- [x] Decide matching strategy for parameterized vs literal SQL refactoring
 
 ## Phase 1: MVP
 
