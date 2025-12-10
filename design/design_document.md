@@ -122,15 +122,28 @@ end
 - Numbered files indicate sequence: `query_1.txt`, `query_2.txt`, etc.
 
 ### 7. Monkey Patching Strategy
-**Methods to intercept**:
-- `ODBC.connect` - May need to capture connection attempt, record DSN/credentials (redacted)
-  - Record mode: Allow real connection, wrap returned database object
-  - Playback mode: Return fake database object without real connection
-  - Note: Connection recording is optional, may not be necessary
-- `ODBC::Database#run` - intercept query execution
-- `ODBC::Statement#fetch_all` - primary data retrieval method
-- `ODBC::Statement#columns` - column metadata
-- `ODBC::Statement#drop` - statement cleanup
+
+**Available methods (may need interception)**:
+
+Connection:
+- `ODBC.connect(dsn, user?, password?)` - Returns `ODBC::Database`
+
+Direct execution:
+- `ODBC::Database#run(sql, *args)` - Execute query, returns `ODBC::Statement` or nil
+- `ODBC::Database#do(sql, *args)` - Execute, return row count, auto-drop
+
+Prepared statements:
+- `ODBC::Database#prepare(sql)` - Returns `ODBC::Statement` without executing
+- `ODBC::Statement#execute(*args)` - Bind parameters and execute
+
+Result retrieval:
+- `ODBC::Statement#fetch_all` - Get all rows
+- `ODBC::Statement#columns` - Column metadata
+- `ODBC::Statement#nparams` - Number of parameters
+- `ODBC::Statement#parameters` - Parameter metadata
+
+Cleanup:
+- `ODBC::Statement#drop` / `#close`
 
 **Patch scope**: Only active within `use_cassette` blocks or between `insert_cassette`/`eject_cassette`
 
@@ -139,11 +152,6 @@ end
 - Connection persists for duration of block or until closed
 - In playback mode, no real connection is made
 - Fake database object must respond to same methods as real one
-
-**Investigation needed**: 
-- Full ruby-odbc API surface to identify all methods requiring interception
-- What parameters does `ODBC.connect` accept?
-- How are credentials passed? (positional args? connection string?)
 
 ## Architecture
 
@@ -262,6 +270,7 @@ end
 
 ### Phase 2: Core Features
 - Multiple queries per cassette
+- Prepared statement support (parameter binding)
 - Query normalization
 - Better error messages
 - Configuration system
@@ -354,6 +363,16 @@ Test code remains unchanged except for wrapping with `use_cassette`.
 4. `statement.drop` or `statement.close` - release resources
 5. Statements should be dropped/closed for memory performance
 
+**Prepared Statements** (from ruby-odbc docs):
+- `db.prepare(sql)` - Prepares query, returns `ODBC::Statement`
+- `stmt.execute(*args)` - Binds args to parameters and executes
+- `stmt.nparams` - Returns number of parameters
+- `stmt.parameters` - Returns array of `ODBC::Parameter` objects
+- `stmt.parameter(n)` - Returns info for n-th parameter
+- Parameters are positional, bound by `?` placeholders in SQL
+- `db.run(sql, *args)` - Convenience method that prepares + executes in one call
+- `db.do(sql, *args)` - Like `run`, but returns row count and auto-drops
+
 **Methods to Intercept** (refined):
 - `ODBC.connect(dsn, user=nil, password=nil)` - may have block form
 - `ODBC::Database#run(sql, *params)` - returns `ODBC::Statement` or nil
@@ -363,13 +382,15 @@ Test code remains unchanged except for wrapping with `use_cassette`.
 - `ODBC::Statement#drop` - cleanup
 
 **Investigation Script**:
-Created `lib/super8/scripts/investigate_odbc.rb` to test:
+Created `lib/super8/scripts/investigate_ruby_odbc.rb` to test:
 1. Actual data types returned by `fetch_all`
 2. Whether Marshal preserves types
 3. Exact structure of `columns` return value
 4. Available methods on connection and statement objects
 
-Run with: `bundle exec ruby lib/super8/scripts/investigate_odbc.rb`
+Run with: `bundle exec ruby lib/super8/scripts/investigate_ruby_odbc.rb`
+
+**TODO**: Create a second script to investigate capturing prepared statements with parameter binding.
 
 ### Priority 2: File Format Validation
 After investigating ruby-odbc:
@@ -387,8 +408,7 @@ After investigating ruby-odbc:
 
 1. Should we track statement options (e.g., cursor type)?
 2. How to handle transactions (BEGIN, COMMIT, ROLLBACK)?
-3. Should we support prepared statements/parameter binding?
-4. How to handle database errors in recordings?
+3. How to handle database errors in recordings?
 5. Should we record connection metadata beyond DSN?
 6. How to handle concurrent test execution? (probably not needed for spike)
 7. Should we support multiple DSNs in one cassette?
