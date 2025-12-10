@@ -13,6 +13,13 @@ A VCR-like library for ruby-odbc that records and replays database queries and r
 - **Fast Tests**: Eliminate database round-trip time
 - **Accurate Tests**: Use real database responses, not hand-crafted mocks
 
+## Assumptions
+
+- **Single connection per cassette**: Each cassette supports one `ODBC.connect` call.
+  Tests requiring multiple DSNs should use nested `use_cassette` calls or separate tests.
+  See `adr_001_single_connection_per_cassette.md` for rationale.
+  Supporting multiple connections per cassette is a possible future enhancement.
+
 ## Design Decisions
 
 ### 1. Naming & Location
@@ -296,7 +303,7 @@ Test code remains unchanged except for wrapping with `use_cassette`.
 2. How to handle transactions (BEGIN, COMMIT, ROLLBACK)?
 3. How to handle database errors in recordings?
 4. How to handle concurrent test execution? (probably not needed for spike)
-5. Should we support multiple DSNs in one cassette?
+5. ~~Should we support multiple DSNs in one cassette?~~ **Decided**: No, one connection per cassette. See ADR 001.
 6. How to handle schema changes between recording and playback?
 7. Query normalization — is exact match sufficient?
 
