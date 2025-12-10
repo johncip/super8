@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Super 8 will support only a single connection per cassette to keep the implementation simple.
 
 ## Context
 
