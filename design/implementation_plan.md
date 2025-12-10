@@ -14,25 +14,33 @@ Living TODO list for building Super8.
 - [x] Design cassette format for command log style (see cassette_schema.md)
 - [x] Decide matching strategy for parameterized vs literal SQL refactoring
 
-## Phase 1: MVP
+## Phase 1: Record Mode
 
-Minimal viable implementation supporting current codebase usage.
+Record mode implementation - capture real ODBC calls and save to cassette.
 
 - [x] `Super8.use_cassette(name) { }` block API
 - [x] `Super8.configure { |c| c.cassette_directory = ... }`
 - [x] Cassette class skeleton (name, save, load) with basic specs
-- [ ] Intercept `ODBC.connect(dsn)` (block form)
-- [ ] Intercept `Database#run(sql)` (no params)
-- [ ] Intercept `Statement#columns`
-- [ ] Intercept `Statement#fetch_all`
-- [ ] Intercept `Statement#drop`
-- [ ] Record mode: save cassette to disk
-- [ ] Playback mode: load cassette, return recorded data
-- [ ] Connection scope validation (DSN match)
-- [ ] Query mismatch error with diff
+- [ ] Intercept `ODBC.connect(dsn)` (block form) - record connection info
+- [ ] Intercept `Database#run(sql)` (no params) - record query and result
+- [ ] Intercept `Statement#columns` - record column metadata
+- [ ] Intercept `Statement#fetch_all` - record row data
+- [ ] Intercept `Statement#drop` - record cleanup call
+- [ ] Command log format: save interactions to disk
 - [ ] Integration test with real ruby-odbc
 
-## Phase 2: Incremental Fetch
+## Phase 2: Playback Mode
+
+Playback mode implementation - return recorded data, validate matches.
+
+- [ ] Load cassette command log
+- [ ] Return fake database object
+- [ ] Replay recorded interactions in sequence
+- [ ] Connection scope validation (DSN match)
+- [ ] Query mismatch error with diff
+- [ ] Integration test without database connection
+
+## Phase 3: Incremental Fetch
 
 Support different ways to retrieve data from a Statement.
 
@@ -42,7 +50,7 @@ Support different ways to retrieve data from a Statement.
 - [ ] Intercept `Statement#each` / `Statement#each_hash`
 - [ ] Command log format handles mixed fetch calls
 
-## Phase 3: Parameterized Queries
+## Phase 4: Parameterized Queries
 
 - [ ] Intercept `Database#run(sql, *args)` with parameters
 - [ ] Intercept `Database#do(sql, *args)`
@@ -50,7 +58,7 @@ Support different ways to retrieve data from a Statement.
 - [ ] Record template + params in cassette
 - [ ] Decide and implement matching strategy for params
 
-## Phase 4: Polish
+## Phase 5: Polish
 
 - [ ] RSpec metadata integration (`super8: "cassette_name"`)
 - [ ] Multiple record modes (`:once`, `:new_episodes`, `:all`, `:none`)
