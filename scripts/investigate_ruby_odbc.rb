@@ -82,11 +82,11 @@ begin
     info_types = {
       "SQL_DATABASE_NAME" => 16,      # Current database
       "SQL_SERVER_NAME" => 13,        # Server name
-      "SQL_DBMS_NAME" => 17,         # DBMS name
-      "SQL_DBMS_VER" => 18,          # DBMS version
-      "SQL_DATA_SOURCE_NAME" => 2,   # DSN
-      "SQL_DRIVER_NAME" => 6,        # Driver name
-      "SQL_USER_NAME" => 47          # Username
+      "SQL_DBMS_NAME" => 17,          # DBMS name
+      "SQL_DBMS_VER" => 18,           # DBMS version
+      "SQL_DATA_SOURCE_NAME" => 2,    # DSN
+      "SQL_DRIVER_NAME" => 6,         # Driver name
+      "SQL_USER_NAME" => 47           # Username
     }
 
     info_types.each do |name, code|
@@ -127,7 +127,7 @@ begin
       16 => "SQL_DATABASE_NAME",
       39 => "SQL_SCHEMA_TERM",
       41 => "SQL_CATALOG_TERM",
-      10_004 => "SQL_ATTR_CURRENT_SCHEMA",    # IBM extension (not standard)
+      10_004 => "SQL_ATTR_CURRENT_SCHEMA" # IBM extension (not standard)
     }
 
     puts "Probing ODBC info codes for schema/catalog:"
