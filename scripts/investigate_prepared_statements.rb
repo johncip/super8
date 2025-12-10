@@ -140,7 +140,7 @@ begin
     puts "Statement methods that might expose SQL or values:"
     stmt_methods = (stmt.methods - Object.methods).sort
     relevant = stmt_methods.select { |m| m.to_s =~ /sql|query|text|param|bind|arg|value/i }
-    puts "  #{relevant.join(", ")}"
+    puts "  #{relevant.join(', ')}"
     puts
     puts "  (If empty, there's no obvious way to retrieve SQL from statement)"
     puts
@@ -158,7 +158,7 @@ begin
     if stmt.nparams > 0
       param = stmt.parameter(0)
       param_methods = (param.methods - Object.methods).sort
-      puts "  Parameter methods: #{param_methods.join(", ")}"
+      puts "  Parameter methods: #{param_methods.join(', ')}"
 
       # Try anything that might give us the bound value
       %i[value output_value].each do |m|
