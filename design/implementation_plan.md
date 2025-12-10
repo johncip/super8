@@ -18,8 +18,9 @@ Living TODO list for building Super8.
 
 Minimal viable implementation supporting current codebase usage.
 
-- [ ] `Super8.use_cassette(name) { }` block API
-- [ ] `Super8.configure { |c| c.cassette_directory = ... }`
+- [x] `Super8.use_cassette(name) { }` block API
+- [x] `Super8.configure { |c| c.cassette_directory = ... }`
+- [x] Cassette class skeleton (name, save, load) with basic specs
 - [ ] Intercept `ODBC.connect(dsn)` (block form)
 - [ ] Intercept `Database#run(sql)` (no params)
 - [ ] Intercept `Statement#columns`
