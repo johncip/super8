@@ -117,6 +117,28 @@ begin
     end
     puts
 
+    puts "1b. SCHEMA / CATALOG INVESTIGATION"
+    puts "-" * 50
+
+    # There is no ODBC-standard way to get the current schema. SQL_ATTR_CURRENT_SCHEMA
+    # (10004) is an IBM extension that other drivers may not populate. If it returns
+    # empty, Super8 records empty and skips schema validation on playback.
+    schema_catalog_info = {
+      16 => "SQL_DATABASE_NAME",
+      39 => "SQL_SCHEMA_TERM",
+      41 => "SQL_CATALOG_TERM",
+      10_004 => "SQL_ATTR_CURRENT_SCHEMA",    # IBM extension (not standard)
+    }
+
+    puts "Probing ODBC info codes for schema/catalog:"
+    schema_catalog_info.each do |code, name|
+      value = db.get_info(code)
+      puts "  #{code} (#{name}): #{value.inspect}"
+    rescue StandardError => e
+      puts "  #{code} (#{name}): ERROR - #{e.message}"
+    end
+    puts
+
     puts "2. QUERY EXECUTION"
     puts "-" * 50
 
