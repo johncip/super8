@@ -1,0 +1,69 @@
+# Super8 Implementation Plan
+
+Living TODO list for building Super8.
+
+## Phase 0: Investigation
+
+- [x] Create script to inspect ruby-odbc data types and column metadata
+- [x] Run script, confirm all values are strings (CSV sufficient)
+- [x] Create script to investigate prepared statements and parameters
+- [x] Confirm nparams indicates parameterization
+- [x] Confirm SQL/params must be captured at intercept time (not queryable later)
+- [x] Confirm two-phase model (execute → fetch) for all query methods
+- [x] Document which methods to intercept (see api_support.md)
+- [x] Design cassette format for command log style (see cassette_schema.md)
+- [ ] Decide matching strategy for parameterized vs literal SQL refactoring
+
+## Phase 1: MVP
+
+Minimal viable implementation supporting current codebase usage.
+
+- [ ] `Super8.use_cassette(name) { }` block API
+- [ ] `Super8.configure { |c| c.cassette_directory = ... }`
+- [ ] Intercept `ODBC.connect(dsn)` (block form)
+- [ ] Intercept `Database#run(sql)` (no params)
+- [ ] Intercept `Statement#columns`
+- [ ] Intercept `Statement#fetch_all`
+- [ ] Intercept `Statement#drop`
+- [ ] Record mode: save cassette to disk
+- [ ] Playback mode: load cassette, return recorded data
+- [ ] Connection scope validation (DSN match)
+- [ ] Query mismatch error with diff
+- [ ] Integration test with real ruby-odbc
+
+## Phase 2: Incremental Fetch
+
+Support different ways to retrieve data from a Statement.
+
+- [ ] Intercept `Statement#fetch` (single row)
+- [ ] Intercept `Statement#fetch_hash`
+- [ ] Intercept `Statement#fetch_many(n)`
+- [ ] Intercept `Statement#each` / `Statement#each_hash`
+- [ ] Command log format handles mixed fetch calls
+
+## Phase 3: Parameterized Queries
+
+- [ ] Intercept `Database#run(sql, *args)` with parameters
+- [ ] Intercept `Database#do(sql, *args)`
+- [ ] Intercept `Database#prepare(sql)` + `Statement#execute(*args)`
+- [ ] Record template + params in cassette
+- [ ] Decide and implement matching strategy for params
+
+## Phase 4: Polish
+
+- [ ] RSpec metadata integration (`super8: "cassette_name"`)
+- [ ] Multiple record modes (`:once`, `:new_episodes`, `:all`, `:none`)
+- [ ] Manual `insert_cassette` / `eject_cassette` API
+- [ ] Better error messages
+- [ ] Documentation
+- [ ] Consider extracting as gem
+
+## Out of Scope
+
+- Transactions
+- Connection pooling
+- Cursor scrolling / `fetch_scroll`
+- Statement options (`maxrows`, `timeout`)
+- Metadata queries (`tables`, `columns`, `indexes`)
+- Multiple DSNs per cassette
+- Thread safety / concurrent test execution

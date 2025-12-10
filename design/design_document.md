@@ -42,7 +42,11 @@ Super8.eject_cassette
 
 ### 3. File Format & Storage
 
-**Multi-file approach** per cassette, stored in cassette directory:
+**Multi-file approach** per cassette, stored in cassette directory.
+
+> **Note**: The structure below is a preliminary sketch and may change as we learn more
+> about ruby-odbc's behavior (e.g., how stateful operations like incremental fetching
+> should be recorded).
 
 ```
 spec/super8_cassettes/
@@ -78,21 +82,18 @@ Unlike HTTP where each request can be independent, ODBC uses persistent connecti
   - Without scope validation, Super 8 would return cached results for any query text match
   - Example failure: Code changes to query `PRODDB` instead of `TESTDB`, test passes with cached `TESTDB` results
 - **What to record**:
-  - DSN name (always available)
-  - Database/catalog name (may need to query from connection)
-  - Schema/library (may need to query from connection)
-  - Server hostname (may need to query from connection)
-  - Decision: Start with DSN, expand if needed
+  - DSN name (always available from connect args)
+  - Additional metadata (database, schema, server) available via `get_info` but requires
+    extra server calls; use only if explicitly enabled
+  - Decision: Start with DSN only
 - **What NOT to record**:
   - Username/password (security risk, and either not available or should be redacted)
 - In playback mode, connection scope must match or raise error
 
-**Storage Format Investigation Needed**:
-- Need to inspect ruby-odbc internals to understand response data structure
-- Key question: Are responses typed (real integers, dates) or all strings?
-- If typed: Marshal is necessary to preserve type information
-- If strings: Could use YAML, but Marshal is safer
-- What does `ODBC.connect` return/require?
+**Storage Format**:
+- All values from ruby-odbc are strings; CSV is sufficient for row data
+- Column metadata is simple structured data; YAML is sufficient
+- See `investigations.md` for details
 
 ### 4. Configuration
 
@@ -154,6 +155,9 @@ Cleanup:
 - Fake database object must respond to same methods as real one
 
 ## Architecture
+
+> **Note**: The component breakdown below is a tentative sketch. Actual implementation
+> may differ as we learn more.
 
 ### Core Components
 
@@ -227,9 +231,9 @@ Cleanup:
    - Capture query details (Request)
    - Capture response details (Response)
    - Store interaction in cassette
-5. Cassette is ejected, save all files to disk:
-   - `connection.yml` (with redacted credentials)
-   - `request_N.yml`, `query_N.txt`, `columns_N.yml`, `response_N.marshal` for each query
+5. Cassette is ejected, save to disk:
+   - Connection metadata (DSN, redacted credentials)
+   - For each query: SQL text, column metadata, row data
 
 #### Playback Mode
 1. Test starts, cassette is loaded from disk (including connection info)
@@ -260,33 +264,6 @@ Cleanup:
 - Test different record modes
 - Test error conditions
 
-## Implementation Phases
-
-### Phase 1: Basic Recording
-- Single query recording
-- Basic playback
-- Simple file format (YAML)
-- Block-based API
-
-### Phase 2: Core Features
-- Multiple queries per cassette
-- Prepared statement support (parameter binding)
-- Query normalization
-- Better error messages
-- Configuration system
-
-### Phase 3: Advanced Features
-- RSpec integration
-- Different record modes
-- Query matchers
-- Performance optimization
-
-### Phase 4: Polish
-- Documentation
-- Examples
-- Edge case handling
-- Consider extracting as gem
-
 ## Integration with Existing Code
 
 ### Current ODBC Usage Pattern
@@ -313,107 +290,15 @@ end
 
 Test code remains unchanged except for wrapping with `use_cassette`.
 
-## Investigation Tasks
-
-### Priority 1: Understand ruby-odbc Internals
-
-**Connection API** (from documentation):
-- `ODBC.connect(dsn)` - DSN only (credentials in system ODBC config)
-- `ODBC.connect(dsn, user, password)` - DSN with credentials
-- `ODBC.connect(dsn) { |db| ... }` - Block form, auto-disconnect
-- Returns `ODBC::Database` object
-- Current app usage: `ODBC.connect("retalix")` - no credentials passed
-  - Credentials must be in `/etc/odbc.ini` or system ODBC configuration
-
-**Credential Handling** (Security):
-- Credentials can be passed as 2nd and 3rd arguments to `ODBC.connect`
-- In current app: Not passed to `connect()`, stored in system DSN config
-- **How it works under the hood**:
-  - ruby-odbc calls the ODBC C API function `SQLConnect(dsn, user, password)`
-  - When user/password are nil (DSN-only case), ruby-odbc passes:
-    - `suser = NULL` and `suser_length = 0`
-    - `spasswd = NULL` and `spasswd_length = 0`
-  - The underlying ODBC driver manager (unixODBC) receives the NULL credentials
-  - The driver manager then reads credentials from the DSN configuration in `/etc/odbc.ini`
-  - **Important**: ruby-odbc never sees the credentials in the DSN-only case
-- **For Super8**:
-  - In DSN-only mode: ruby-odbc doesn't have access to credentials (nothing to record)
-  - If user/password passed explicitly: **must redact** before storing
-  - Store as `<REDACTED>` or similar placeholder
-  - In playback mode: ignore credentials, connection is faked anyway
-
-**Response Data** (needs verification with test script):
-- `statement.fetch_all` returns Array of Arrays
-- Each row is an Array of field values
-- Field types: **Unknown - need to test if typed or all strings**
-- This is critical for Marshal decision
-
-**Column Metadata** (from documentation):
-- `statement.columns` returns Hash by default
-  - Keys: column names (String)
-  - Values: appears to be nil or metadata
-- `statement.columns(true)` returns Array of `ODBC::Column` objects
-  - Each has: `name`, `type`, `length`, `precision`, `scale`, `nullable`
-- `statement.ncols` returns number of columns (Integer)
-
-**Statement Lifecycle**:
-1. `db.run(query)` - executes and returns `ODBC::Statement` (or nil for non-SELECT)
-2. `statement.columns` - get column info
-3. `statement.fetch`, `statement.fetch_all`, `statement.fetch_hash` - retrieve data
-4. `statement.drop` or `statement.close` - release resources
-5. Statements should be dropped/closed for memory performance
-
-**Prepared Statements** (from ruby-odbc docs):
-- `db.prepare(sql)` - Prepares query, returns `ODBC::Statement`
-- `stmt.execute(*args)` - Binds args to parameters and executes
-- `stmt.nparams` - Returns number of parameters
-- `stmt.parameters` - Returns array of `ODBC::Parameter` objects
-- `stmt.parameter(n)` - Returns info for n-th parameter
-- Parameters are positional, bound by `?` placeholders in SQL
-- `db.run(sql, *args)` - Convenience method that prepares + executes in one call
-- `db.do(sql, *args)` - Like `run`, but returns row count and auto-drops
-
-**Methods to Intercept** (refined):
-- `ODBC.connect(dsn, user=nil, password=nil)` - may have block form
-- `ODBC::Database#run(sql, *params)` - returns `ODBC::Statement` or nil
-- `ODBC::Statement#fetch_all` - returns Array of Arrays
-- `ODBC::Statement#columns(as_array=false)` - returns Hash or Array
-- `ODBC::Statement#ncols` - returns Integer
-- `ODBC::Statement#drop` - cleanup
-
-**Investigation Script**:
-Created `lib/super8/scripts/investigate_ruby_odbc.rb` to test:
-1. Actual data types returned by `fetch_all`
-2. Whether Marshal preserves types
-3. Exact structure of `columns` return value
-4. Available methods on connection and statement objects
-
-Run with: `bundle exec ruby lib/super8/scripts/investigate_ruby_odbc.rb`
-
-**TODO**: Create a second script to investigate capturing prepared statements with parameter binding.
-
-### Priority 2: File Format Validation
-After investigating ruby-odbc:
-
-1. Confirm Marshal is necessary for response data
-2. Determine if column metadata needs Marshal or YAML is sufficient
-3. Test round-trip serialization with real data
-
-### Priority 3: API Refinement
-1. Error messages for query mismatches (show diff)
-2. Handling of missing cassettes in different record modes
-3. Thread safety for cassette stack
-
-## Open Questions (Lower Priority)
+## Open Questions
 
 1. Should we track statement options (e.g., cursor type)?
 2. How to handle transactions (BEGIN, COMMIT, ROLLBACK)?
 3. How to handle database errors in recordings?
-5. Should we record connection metadata beyond DSN?
-6. How to handle concurrent test execution? (probably not needed for spike)
-7. Should we support multiple DSNs in one cassette?
-8. How to handle schema changes between recording and playback?
-9. Query normalization - is exact match sufficient?
+4. How to handle concurrent test execution? (probably not needed for spike)
+5. Should we support multiple DSNs in one cassette?
+6. How to handle schema changes between recording and playback?
+7. Query normalization — is exact match sufficient?
 
 ## References
 
