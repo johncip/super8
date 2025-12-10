@@ -8,8 +8,8 @@ Super 8 will support only a single connection per cassette to keep the implement
 
 Super8 needs to decide how to handle ODBC connections in cassettes. The options are:
 
-1. **Separate `connection.yml`** — one connection per cassette, stored in a dedicated file
-2. **Connection as command** — connections are entries in `commands.yml`, supporting multiple connections per cassette
+1. One connection per cassette, which makes storing connection info in a dedicated file an option
+2. Connections are regular entries in `commands.yml`, supporting multiple connections per cassette
 
 ## Scenarios Considered
 
