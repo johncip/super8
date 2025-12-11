@@ -1,5 +1,6 @@
 require "yaml"
 
+# :reek:UncommunicativeModuleName
 module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.
@@ -41,17 +42,17 @@ module Super8
     end
 
     # Records a Database#run command to the command log
-    def record_run(sql, params = [])
+    def record_run(sql, params=[])
       statement_id = "stmt_#{@statement_counter}"
       @statement_counter += 1
-      
+
       command = {
         "method" => "run",
         "sql" => sql,
         "params" => params,
         "statement_id" => statement_id
       }
-      
+
       @commands << command
       save_commands
       statement_id
