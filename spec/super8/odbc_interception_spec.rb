@@ -21,7 +21,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
   end
 
   describe "ODBC.connect" do
-    it "saves DSN to connection.yml" do # rubocop:disable RSpec/ExampleLength
+    it "saves DSN to connection.yml" do
       Super8.use_cassette(cassette_name) do
         ODBC.connect("retalix") {} # rubocop:disable Lint/EmptyBlock
       end
@@ -66,10 +66,13 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       expect(commands.length).to eq(1)
 
       first_command = commands.first
-      expect(first_command["method"]).to eq("run")
-      expect(first_command["sql"]).to eq(sql)
-      expect(first_command["params"]).to eq([])
-      expect(first_command["statement_id"]).to match(/stmt_\d+/)
+
+      aggregate_failures do
+        expect(first_command["method"]).to eq("run")
+        expect(first_command["sql"]).to eq(sql)
+        expect(first_command["params"]).to eq([])
+        expect(first_command["statement_id"]).to match(/stmt_\d+/)
+      end
     end
 
     it "records multiple queries with sequential statement IDs" do # rubocop:disable RSpec/ExampleLength
