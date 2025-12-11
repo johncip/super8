@@ -8,6 +8,8 @@ module Super8
 
     def initialize(name)
       @name = name
+      @commands = []
+      @statement_counter = 0
     end
 
     # Full path to the cassette directory.
@@ -36,6 +38,30 @@ module Super8
 
     def load_connection
       YAML.load_file(File.join(path, "connection.yml"))["dsn"]
+    end
+
+    # Records a Database#run command to the command log
+    def record_run(sql, params = [])
+      statement_id = "stmt_#{@statement_counter}"
+      @statement_counter += 1
+      
+      command = {
+        "method" => "run",
+        "sql" => sql,
+        "params" => params,
+        "statement_id" => statement_id
+      }
+      
+      @commands << command
+      save_commands
+      statement_id
+    end
+
+    private
+
+    def save_commands
+      commands_file = File.join(path, "commands.yml")
+      File.write(commands_file, @commands.to_yaml)
     end
   end
 end

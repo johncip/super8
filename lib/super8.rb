@@ -1,6 +1,7 @@
 require_relative "super8/config"
 require_relative "super8/errors"
 require_relative "super8/cassette"
+require_relative "super8/statement_wrapper"
 require "odbc"
 
 module Super8
@@ -24,7 +25,19 @@ module Super8
         # TODO: Handle storing username when user calls ODBC.connect(dsn, user, password)
         cassette.save
         cassette.save_connection(dsn)
-        original_connect.call(dsn, &block)
+        
+        original_connect.call(dsn) do |db|
+          # Intercept Database#run to record SQL queries
+          original_run = db.method(:run)
+          
+          db.define_singleton_method(:run) do |sql, *params|
+            statement_id = cassette.record_run(sql, params)
+            real_statement = original_run.call(sql, *params)
+            StatementWrapper.new(real_statement, statement_id, cassette)
+          end
+          
+          block&.call(db)
+        end
       end
       
       yield
