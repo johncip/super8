@@ -24,7 +24,7 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 - [x] Intercept `ODBC.connect(dsn)` (block form) - record connection info
 - [x] Intercept `Database#run(sql)` (no params) - record query and result
 - [x] Intercept `Statement#columns` - record column metadata
-- [ ] Intercept `Statement#fetch_all` - record row data
+- [x] Intercept `Statement#fetch_all` - record row data
 - [ ] Intercept `Statement#drop` - record cleanup call
 - [ ] Command log format: save interactions to disk
 - [ ] Integration test with real ruby-odbc

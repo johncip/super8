@@ -193,13 +193,115 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       commands = YAML.load_file(commands_file)
 
       columns_commands = commands.select { |cmd| cmd["method"] == "columns" }
-      
+
       aggregate_failures do
         expect(columns_commands.length).to eq(2)
         expect(columns_commands[0]["as_aray"]).to be false
         expect(columns_commands[0]["result"]).to eq(columns_hash)
         expect(columns_commands[1]["as_aray"]).to be true
         expect(columns_commands[1]["result"]).to eq(columns_array)
+      end
+    end
+  end
+
+  # TODO: break these specs up meaningfully
+  describe "Statement#fetch_all" do
+    let(:row_data) { [["001", "Alice"], ["002", "Bob"], ["003", "Charlie"]] }
+
+    it "records fetch_all call and saves row data to CSV file" do # rubocop:disable RSpec/ExampleLength
+      allow(fake_db).to receive(:run).with("SELECT id, name FROM users").and_return(fake_statement)
+      allow(fake_statement).to receive(:fetch_all).and_return(row_data)
+
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT id, name FROM users")
+          result = statement.fetch_all
+          expect(result).to eq(row_data) # Should return original result
+        end
+      end
+
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      # Check command log entry
+      fetch_command = commands.find { |cmd| cmd["method"] == "fetch_all" }
+
+      aggregate_failures do
+        expect(fetch_command).not_to be_nil
+        expect(fetch_command["method"]).to eq("fetch_all")
+        expect(fetch_command["statement_id"]).to eq("stmt_0")
+        expect(fetch_command["rows_file"]).to eq("rows_0.csv")
+      end
+
+      # Check CSV file was created with correct data
+      csv_file = File.join(cassette_path, "rows_0.csv")
+      expect(File.exist?(csv_file)).to be true
+
+      csv_content = CSV.read(csv_file)
+      expect(csv_content).to eq(row_data)
+    end
+
+    it "handles empty result sets" do # rubocop:disable RSpec/ExampleLength
+      allow(fake_db).to receive(:run).with("SELECT * FROM empty_table").and_return(fake_statement)
+      allow(fake_statement).to receive(:fetch_all).and_return([])
+
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT * FROM empty_table")
+          result = statement.fetch_all
+          expect(result).to eq([])
+        end
+      end
+
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      fetch_command = commands.find { |cmd| cmd["method"] == "fetch_all" }
+      expect(fetch_command["rows_file"]).to eq("rows_0.csv")
+
+      # CSV file should exist but be empty
+      csv_file = File.join(cassette_path, "rows_0.csv")
+      expect(File.exist?(csv_file)).to be true
+      expect(CSV.read(csv_file)).to eq([])
+    end
+
+    describe "multiple fetch_all calls with sequential file naming" do
+      let(:row_data1) { [["001", "Alice"]] } # rubocop:disable RSpec/IndexedLet
+      let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] } # rubocop:disable RSpec/IndexedLet
+
+      before do
+        fake_statement1 = instance_double(ODBC::Statement)
+        fake_statement2 = instance_double(ODBC::Statement)
+        allow(fake_statement1).to receive(:fetch_all).and_return(row_data1)
+        allow(fake_statement2).to receive(:fetch_all).and_return(row_data2)
+        allow(fake_db).to receive(:run).with("SELECT * FROM users").and_return(fake_statement1)
+        allow(fake_db).to receive(:run).with("SELECT * FROM orders").and_return(fake_statement2)
+
+        Super8.use_cassette(cassette_name) do
+          ODBC.connect("retalix") do |db|
+            stmt1 = db.run("SELECT * FROM users")
+            stmt1.fetch_all
+            stmt2 = db.run("SELECT * FROM orders")
+            stmt2.fetch_all
+          end
+        end
+      end
+
+      it "creates CSV files with sequential numbering" do
+        expect(File.exist?(File.join(cassette_path, "rows_0.csv"))).to be true
+        expect(File.exist?(File.join(cassette_path, "rows_1.csv"))).to be true
+      end
+
+      it "writes correct data to sequentially numbered CSV files" do
+        expect(CSV.read(File.join(cassette_path, "rows_0.csv"))).to eq(row_data1)
+        expect(CSV.read(File.join(cassette_path, "rows_1.csv"))).to eq(row_data2)
+      end
+
+      it "records commands with sequential file references" do
+        commands = YAML.load_file(File.join(cassette_path, "commands.yml"))
+        fetch_commands = commands.select { |cmd| cmd["method"] == "fetch_all" }
+        expect(fetch_commands[0]["rows_file"]).to eq("rows_0.csv")
+        expect(fetch_commands[1]["rows_file"]).to eq("rows_1.csv")
       end
     end
   end
