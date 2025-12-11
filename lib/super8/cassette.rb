@@ -58,6 +58,19 @@ module Super8
       statement_id
     end
 
+    # Records a Statement#columns command to the command log
+    def record_columns(statement_id, as_ary, result)
+      command = {
+        "method" => "columns",
+        "statement_id" => statement_id,
+        "as_aray" => as_ary,
+        "result" => result
+      }
+
+      @commands << command
+      save_commands
+    end
+
     private
 
     def save_commands

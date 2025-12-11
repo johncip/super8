@@ -9,8 +9,16 @@ module Super8
       @cassette = cassette
     end
 
-    # Delegate all method calls to the real statement for now.
-    # Future phases will intercept specific methods (columns, fetch_all, etc.)
+    # Intercept columns method to record column metadata
+    # :reek:BooleanParameter
+    def columns(as_ary=false) # rubocop:disable Style/OptionalBooleanParameter
+      result = @real_statement.columns(as_ary)
+      @cassette.record_columns(@statement_id, as_ary, result)
+      result
+    end
+
+    # Delegate all other method calls to the real statement for now.
+    # Future phases will intercept specific methods (fetch_all, etc.)
     def method_missing(method_name, ...)
       @real_statement.send(method_name, ...)
     end

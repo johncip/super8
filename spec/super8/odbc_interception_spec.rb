@@ -114,4 +114,93 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       expect(commands.first["method"]).to eq("run")
     end
   end
+
+  describe "Statement#columns" do
+    let(:columns_hash) { {"ID" => "Integer", "NAME" => "String"} }
+    let(:columns_array) { [{"name" => "ID", "type" => 4}, {"name" => "NAME", "type" => 1}] }
+
+    before do
+      allow(fake_db).to receive(:run).and_return(fake_statement)
+    end
+
+    it "records columns call with as_ary=false and returns original result" do # rubocop:disable RSpec/ExampleLength
+      allow(fake_statement).to receive(:columns).with(false).and_return(columns_hash)
+
+      result = nil
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT * FROM USERS")
+          result = statement.columns
+        end
+      end
+
+      expect(result).to eq(columns_hash)
+
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      columns_command = commands.find { |cmd| cmd["method"] == "columns" }
+      expect(columns_command).not_to be_nil
+
+      aggregate_failures do
+        expect(columns_command["method"]).to eq("columns")
+        expect(columns_command["statement_id"]).to eq("stmt_0")
+        expect(columns_command["as_aray"]).to be false
+        expect(columns_command["result"]).to eq(columns_hash)
+      end
+    end
+
+    it "records columns call with as_ary=true and returns original result" do # rubocop:disable RSpec/ExampleLength
+      allow(fake_statement).to receive(:columns).with(true).and_return(columns_array)
+
+      result = nil
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT * FROM USERS")
+          result = statement.columns(true)
+        end
+      end
+
+      expect(result).to eq(columns_array)
+
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      columns_command = commands.find { |cmd| cmd["method"] == "columns" }
+      expect(columns_command).not_to be_nil
+
+      aggregate_failures do
+        expect(columns_command["method"]).to eq("columns")
+        expect(columns_command["statement_id"]).to eq("stmt_0")
+        expect(columns_command["as_aray"]).to be true
+        expect(columns_command["result"]).to eq(columns_array)
+      end
+    end
+
+    it "records multiple columns calls in sequence" do # rubocop:disable RSpec/ExampleLength
+      allow(fake_statement).to receive(:columns).with(false).and_return(columns_hash)
+      allow(fake_statement).to receive(:columns).with(true).and_return(columns_array)
+
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT * FROM USERS")
+          statement.columns
+          statement.columns(true)
+        end
+      end
+
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      columns_commands = commands.select { |cmd| cmd["method"] == "columns" }
+      
+      aggregate_failures do
+        expect(columns_commands.length).to eq(2)
+        expect(columns_commands[0]["as_aray"]).to be false
+        expect(columns_commands[0]["result"]).to eq(columns_hash)
+        expect(columns_commands[1]["as_aray"]).to be true
+        expect(columns_commands[1]["result"]).to eq(columns_array)
+      end
+    end
+  end
 end
