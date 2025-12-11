@@ -23,7 +23,7 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 - [x] Cassette class skeleton (name, save, load) with basic specs
 - [x] Intercept `ODBC.connect(dsn)` (block form) - record connection info
 - [x] Intercept `Database#run(sql)` (no params) - record query and result
-- [ ] Intercept `Statement#columns` - record column metadata
+- [x] Intercept `Statement#columns` - record column metadata
 - [ ] Intercept `Statement#fetch_all` - record row data
 - [ ] Intercept `Statement#drop` - record cleanup call
 - [ ] Command log format: save interactions to disk
