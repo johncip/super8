@@ -17,8 +17,15 @@ module Super8
       result
     end
 
+    # Intercept fetch_all method to record row data
+    def fetch_all
+      result = @real_statement.fetch_all
+      @cassette.record_fetch_all(@statement_id, result)
+      result
+    end
+
     # Delegate all other method calls to the real statement for now.
-    # Future phases will intercept specific methods (fetch_all, etc.)
+    # Future phases will intercept specific methods (fetch, etc.)
     def method_missing(method_name, ...)
       @real_statement.send(method_name, ...)
     end
