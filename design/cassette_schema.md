@@ -54,14 +54,12 @@ DBMS name and version are intentionally omitted — they can change server-side 
 Ordered sequence of intercepted method calls.
 
 ```yaml
-- index: 0
-  method: run
+- method: run
   sql: "SELECT ID, NAME FROM USERS WHERE STATUS = 'A'"
   params: []
   statement_id: stmt_0
 
-- index: 1
-  method: columns
+- method: columns
   statement_id: stmt_0
   result:
     - name: ID
@@ -71,13 +69,11 @@ Ordered sequence of intercepted method calls.
       type: 1
       length: 50
 
-- index: 2
-  method: fetch_all
+- method: fetch_all
   statement_id: stmt_0
   rows_file: rows_2.csv
 
-- index: 3
-  method: drop
+- method: drop
   statement_id: stmt_0
   result: null
 ```
