@@ -1,3 +1,5 @@
+require "yaml"
+
 module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.
@@ -26,6 +28,14 @@ module Super8
     # Raises CassetteNotFoundError if missing.
     def load
       raise CassetteNotFoundError, "Cassette not found: #{path}" unless exists?
+    end
+
+    def save_connection(dsn)
+      File.write(File.join(path, "connection.yml"), {"dsn" => dsn}.to_yaml)
+    end
+
+    def load_connection
+      YAML.load_file(File.join(path, "connection.yml"))["dsn"]
     end
   end
 end

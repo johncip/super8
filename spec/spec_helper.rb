@@ -1,6 +1,9 @@
 require "bundler/setup"
+require "yaml"
+require "fileutils"
+require "fakefs/spec_helpers"
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "super8"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
