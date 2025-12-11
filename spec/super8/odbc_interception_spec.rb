@@ -265,6 +265,25 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       expect(CSV.read(csv_file)).to eq([])
     end
 
+    it "normalizes nil results to empty arrays" do # rubocop:disable RSpec/ExampleLength
+      query = "SELECT * FROM truly_empty_table"
+      allow(fake_db).to receive(:run).with(query).and_return(fake_statement)
+      allow(fake_statement).to receive(:fetch_all).and_return(nil)
+
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run(query)
+          result = statement.fetch_all
+          expect(result).to be_nil # Should still return original nil
+        end
+      end
+
+      # But in the cassette, it should be stored as empty array
+      csv_file = File.join(cassette_path, "rows_0.csv")
+      expect(File.exist?(csv_file)).to be true
+      expect(CSV.read(csv_file)).to eq([]) # Stored as empty array
+    end
+
     describe "multiple fetch_all calls with sequential file naming" do
       let(:row_data1) { [["001", "Alice"]] } # rubocop:disable RSpec/IndexedLet
       let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] } # rubocop:disable RSpec/IndexedLet

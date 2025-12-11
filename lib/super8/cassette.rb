@@ -74,8 +74,12 @@ module Super8
     end
 
     # Records a Statement#fetch_all command and saves row data to file
+    #
+    # :reek:ControlParameter
     def record_fetch_all(statement_id, result)
-      record_rows_data(statement_id, "fetch_all", result, :csv)
+      # Normalize nil to empty array to match CSV playback behavior
+      normalized_result = result || []
+      record_rows_data(statement_id, "fetch_all", normalized_result, :csv)
     end
 
     private
