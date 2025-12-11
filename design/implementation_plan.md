@@ -14,14 +14,14 @@ Living TODO list for building Super8.
 - [x] Design cassette format for command log style (see cassette_schema.md)
 - [x] Decide matching strategy for parameterized vs literal SQL refactoring
 
-## Phase 1: Record Mode
+## Phase 1: Record Mode (only record, no playback)
 
 Record mode implementation - capture real ODBC calls and save to cassette.
 
 - [x] `Super8.use_cassette(name) { }` block API
 - [x] `Super8.configure { |c| c.cassette_directory = ... }`
 - [x] Cassette class skeleton (name, save, load) with basic specs
-- [ ] Intercept `ODBC.connect(dsn)` (block form) - record connection info
+- [x] Intercept `ODBC.connect(dsn)` (block form) - record connection info
 - [ ] Intercept `Database#run(sql)` (no params) - record query and result
 - [ ] Intercept `Statement#columns` - record column metadata
 - [ ] Intercept `Statement#fetch_all` - record row data
