@@ -11,11 +11,13 @@ module Super8
 
     # Delegate all method calls to the real statement for now.
     # Future phases will intercept specific methods (columns, fetch_all, etc.)
-    def method_missing(method_name, *args, **kwargs, &block)
-      @real_statement.send(method_name, *args, **kwargs, &block)
+    def method_missing(method_name, ...)
+      @real_statement.send(method_name, ...)
     end
 
-    def respond_to_missing?(method_name, include_private = false)
+    # :reek:BooleanParameter
+    # :reek:ManualDispatch
+    def respond_to_missing?(method_name, include_private=false)
       @real_statement.respond_to?(method_name, include_private) || super
     end
   end

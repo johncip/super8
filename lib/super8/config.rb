@@ -1,5 +1,7 @@
 module Super8
+  # Configuration class for Super8 settings.
   class Config
+    # :reek:Attribute
     attr_accessor :cassette_directory, :record_mode
 
     def initialize
