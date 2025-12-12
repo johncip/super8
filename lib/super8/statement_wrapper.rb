@@ -24,6 +24,13 @@ module Super8
       result
     end
 
+    # Intercept drop method to record cleanup call
+    def drop
+      result = @real_statement.drop
+      @cassette.record_drop(@statement_id)
+      result
+    end
+
     # Delegate all other method calls to the real statement for now.
     # Future phases will intercept specific methods (fetch, etc.)
     def method_missing(method_name, ...)

@@ -19,11 +19,11 @@ These are the only ODBC methods currently used in `RetalixFetcher`:
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `ODBC.connect(dsn)` | 🔲 TODO | Block form only; no credentials passed |
-| `Database#run(sql)` | 🔲 TODO | No parameters used currently |
-| `Statement#fetch_all` | 🔲 TODO | Returns Array of Arrays |
-| `Statement#columns` | 🔲 TODO | Returns Hash of column metadata |
-| `Statement#drop` | 🔲 TODO | Cleanup; tracked in log but returns nil |
+| `ODBC.connect(dsn)` | [x] DONE | Block form only; no credentials passed |
+| `Database#run(sql)` | [x] DONE | No parameters used currently |
+| `Statement#fetch_all` | [x] DONE | Returns Array of Arrays |
+| `Statement#columns` | [x] DONE | Returns Hash of column metadata |
+| `Statement#drop` | [x] DONE | Cleanup; returns statement object but we don't log it |
 
 ## Phase 2: Incremental Fetch Methods
 
@@ -31,11 +31,13 @@ Support different ways to retrieve data from a Statement:
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `Statement#fetch` | 🔲 TODO | Single row; returns nil at end |
-| `Statement#fetch_hash` | 🔲 TODO | Row as Hash |
-| `Statement#fetch_many(n)` | 🔲 TODO | Up to N rows |
-| `Statement#each` | 🔲 TODO | Iterator; record yields sequence of rows |
-| `Statement#each_hash` | 🔲 TODO | Iterator returning hashes |
+| `Statement#fetch` | [ ] TODO | Single row; returns nil at end |
+| `Statement#fetch_first` | [ ] TODO | First row; rewinds cursor |
+| `Statement#fetch_hash` | [ ] TODO | Row as Hash |
+| `Statement#fetch_many(n)` | [ ] TODO | Up to N rows |
+| `Statement#each` | [ ] TODO | Iterator; record yields sequence of rows |
+| `Statement#each_hash` | [ ] TODO | Iterator returning hashes |
+| `Statement#column(n)` | [ ] TODO | Metadata for nth column |
 
 Recording strategy: record each call and its result. On playback, return recorded results
 in order. If user changes code to call `fetch` 5 times instead of `fetch_all`, cassette
@@ -47,10 +49,10 @@ Support parameters even though not currently used—likely needed soon:
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `Database#run(sql, *args)` | 🔲 TODO | Template + params |
-| `Database#do(sql, *args)` | 🔲 TODO | Returns row count, auto-drops |
-| `Database#prepare(sql)` | 🔲 TODO | Returns Statement for later execute |
-| `Statement#execute(*args)` | 🔲 TODO | Bind params to prepared statement |
+| `Database#run(sql, *args)` | [ ] TODO | Template + params |
+| `Database#do(sql, *args)` | [ ] TODO | Returns row count, auto-drops |
+| `Database#prepare(sql)` | [ ] TODO | Returns Statement for later execute |
+| `Statement#execute(*args)` | [ ] TODO | Bind params to prepared statement |
 
 ### Investigation Findings (from `investigate_prepared_statements.rb`)
 
@@ -76,11 +78,13 @@ format already stores `sql` and `params` separately—enough info for a helpful 
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `Statement#run(sql, *args)` | 🔲 TODO | Re-prepare on existing statement |
-| `Statement#prepare(sql)` | 🔲 TODO | Re-prepare on existing statement |
-| `Database#proc(sql) { }` | 🔲 TODO | ODBCProc wrapper |
-| `Database#newstmt` | 🔲 TODO | Create blank statement |
-| `ODBC.connect(dsn, user, pw)` | 🔲 TODO | Credentials passed explicitly |
+| `Statement#run(sql, *args)` | [ ] TODO | Re-prepare on existing statement |
+| `Statement#prepare(sql)` | [ ] TODO | Re-prepare on existing statement |
+| `Statement#cancel` | [ ] TODO | Cancel running statement |
+| `Statement#close` | [ ] TODO | Close statement (softer than drop) |
+| `Database#proc(sql) { }` | [ ] TODO | ODBCProc wrapper |
+| `Database#newstmt` | [ ] TODO | Create blank statement |
+| `ODBC.connect(dsn, user, pw)` | [ ] TODO | Credentials passed explicitly |
 
 ## Out of Scope
 
@@ -94,7 +98,7 @@ format already stores `sql` and `params` separately—enough info for a helpful 
 
 ## Status Key
 
-- 🔲 TODO - Not started
-- 🚧 WIP - In progress
-- ✅ Done - Implemented and tested
-- ⏭️ Skip - Decided not to support
+- [ ] TODO - Not started
+- [ ] WIP - In progress
+- [x] DONE - Implemented and tested
+- [ ] SKIP - Decided not to support
