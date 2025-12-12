@@ -28,8 +28,6 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 - [x] Intercept `Statement#drop` - record cleanup call
 - [x] Intercept `Statement#cancel` - record statement cancellation
 - [x] Intercept `Statement#close` - record statement closure
-- [ ] Command log format: save interactions to disk
-- [ ] Integration test with real ruby-odbc
 
 ## Phase 2: Playback Mode
 
