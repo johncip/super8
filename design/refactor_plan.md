@@ -20,9 +20,9 @@
 
 1. **Cassette (Data + Persistence)** — like an ActiveRecord model
 2. **Wrappers (ODBC Adapters)** — record mode and playback mode wrappers for Database and Statement
-3. **Orchestrator** — controls cassette lifecycle and installs/removes wrappers
+3. **Director** — controls cassette lifecycle and installs/removes wrappers
 
-**High-level description:** Cassettes are data that know how to store and load themselves. There are wrappers for ODBC library classes/objects. There is an orchestrator that controls communication between the wrappers and cassettes.
+**High-level description:** Cassettes are data that know how to store and load themselves. There are wrappers for ODBC library classes/objects. There is a director that controls communication between the wrappers and cassettes.
 
 ---
 
@@ -200,17 +200,17 @@ end
 ### Benefits
 
 - Adding a new stubbed method (e.g., `Database#prepare`, `Database#do`) = add it to both wrapper pairs
-- No special-casing in orchestrator; it just picks which wrapper class to use
+- No special-casing in director; it just picks which wrapper class to use
 - Closed for modification: playback doesn't touch recording wrappers
 
 ---
 
-## 3. Orchestrator
+## 3. Director
 
 **Goal:** Single place that controls the cassette lifecycle and installs wrappers.
 
 ```ruby
-class Orchestrator
+class Director
   def initialize
     @original_connect = nil
     @cassette = nil
@@ -267,7 +267,7 @@ end
 
 ## 4. Handling Multiple Database Methods
 
-Instead of special-casing `db.run` in the orchestrator, the DatabaseWrapper classes implement all needed methods:
+Instead of special-casing `db.run` in the director, the DatabaseWrapper classes implement all needed methods:
 
 | Method | RecordingDatabaseWrapper | PlaybackDatabaseWrapper |
 |--------|--------------------------|-------------------------|
@@ -275,7 +275,7 @@ Instead of special-casing `db.run` in the orchestrator, the DatabaseWrapper clas
 | `do(sql, *params)` | delegates + records | validates + returns recorded row count |
 | `prepare(sql)` | delegates + wraps result | validates + returns fake statement |
 
-The orchestrator doesn't grow when new methods are added — only the wrappers do.
+The director doesn't grow when new methods are added — only the wrappers do.
 
 ---
 
@@ -284,7 +284,7 @@ The orchestrator doesn't grow when new methods are added — only the wrappers d
 ```
 lib/super8/
   super8.rb                    # module entry point
-  orchestrator.rb              # cassette lifecycle + patching
+  director.rb                  # cassette lifecycle + patching
   cassette.rb                  # data + persistence only
   config.rb                    # unchanged
   errors.rb                    # add CommandMismatchError, ConnectionMismatchError
@@ -304,7 +304,7 @@ lib/super8/
 | **Non-incremental saving simplifications?** | Eliminates per-command file writes, row file counters, repeated YAML serialization. `save` becomes a single-pass operation at eject. Commands stay in memory as plain hashes. |
 | **Make Cassette like ActiveRecord?** | Yes — Cassette holds data (`@commands`, `@dsn`), has `save` (instance) and `load` (class method). Recording/playback logic moves to wrappers. |
 | **Cursor simplifications?** | `next_command` / `peek_command` make playback straightforward: the cassette always knows what's expected next. No searching, no tracking consumed commands externally. |
-| **Closed for modification?** | Separate RecordingXWrapper and PlaybackXWrapper classes. Adding playback = adding new classes, not modifying existing ones. Orchestrator picks wrapper classes based on mode. |
+| **Closed for modification?** | Separate RecordingXWrapper and PlaybackXWrapper classes. Adding playback = adding new classes, not modifying existing ones. Director picks wrapper classes based on mode. |
 
 ---
 
@@ -320,7 +320,7 @@ lib/super8/
 
 5. **DEFERRED: Create PlaybackDatabaseWrapper and PlaybackStatementWrapper** — use `cassette.playback`. (Deferred until playback is needed)
 
-6. **DEFERRED: Create Orchestrator class** — move `use_cassette` logic there. Accept explicit `mode:` parameter. (Deferred - wrappers currently call `cassette.record` directly, creating coupling that Orchestrator was meant to eliminate)
+6. **DEFERRED: Create Director class** — move `use_cassette` logic there. Accept explicit `mode:` parameter. (Deferred - wrappers currently call `cassette.record` directly, creating coupling that Director was meant to eliminate)
 
 ---
 
@@ -331,4 +331,4 @@ lib/super8/
 - Wrappers handle ODBC-specific concerns and call `cassette.record` with method name + context
 - Code is structured to make adding playback easier when needed
 
-**Deferred:** Steps 5-6. Orchestrator extraction and playback wrappers are not needed for current record-only use case.
+**Deferred:** Steps 5-6. Director extraction and playback wrappers are not needed for current record-only use case.
