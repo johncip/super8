@@ -61,7 +61,7 @@ module Super8
 
     # Records a Statement#columns command to the command log
     def record_columns(statement_id, as_ary, result)
-      record(:columns, statement_id: statement_id, as_aray: as_ary, result: result)
+      record(:columns, statement_id: statement_id, as_ary: as_ary, result: result)
     end
 
     # Records a Statement#fetch_all command with row data

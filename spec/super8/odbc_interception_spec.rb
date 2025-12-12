@@ -145,7 +145,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       aggregate_failures do
         expect(columns_command["method"]).to eq("columns")
         expect(columns_command["statement_id"]).to eq("stmt_0")
-        expect(columns_command["as_aray"]).to be false
+        expect(columns_command["as_ary"]).to be false
         expect(columns_command["result"]).to eq(columns_hash)
       end
     end
@@ -172,7 +172,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       aggregate_failures do
         expect(columns_command["method"]).to eq("columns")
         expect(columns_command["statement_id"]).to eq("stmt_0")
-        expect(columns_command["as_aray"]).to be true
+        expect(columns_command["as_ary"]).to be true
         expect(columns_command["result"]).to eq(columns_array)
       end
     end
@@ -196,9 +196,9 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(columns_commands.length).to eq(2)
-        expect(columns_commands[0]["as_aray"]).to be false
+        expect(columns_commands[0]["as_ary"]).to be false
         expect(columns_commands[0]["result"]).to eq(columns_hash)
-        expect(columns_commands[1]["as_aray"]).to be true
+        expect(columns_commands[1]["as_ary"]).to be true
         expect(columns_commands[1]["result"]).to eq(columns_array)
       end
     end
