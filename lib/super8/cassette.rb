@@ -94,6 +94,28 @@ module Super8
       save_commands
     end
 
+    # Records a Statement#cancel command to the command log
+    def record_cancel(statement_id)
+      command = {
+        "method" => "cancel",
+        "statement_id" => statement_id
+      }
+
+      @commands << command
+      save_commands
+    end
+
+    # Records a Statement#close command to the command log
+    def record_close(statement_id)
+      command = {
+        "method" => "close",
+        "statement_id" => statement_id
+      }
+
+      @commands << command
+      save_commands
+    end
+
     private
 
     # Generic method to record row data in different formats
