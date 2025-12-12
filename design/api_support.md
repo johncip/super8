@@ -80,8 +80,8 @@ format already stores `sql` and `params` separately—enough info for a helpful 
 |--------|--------|-------|
 | `Statement#run(sql, *args)` | [ ] TODO | Re-prepare on existing statement |
 | `Statement#prepare(sql)` | [ ] TODO | Re-prepare on existing statement |
-| `Statement#cancel` | [ ] TODO | Cancel running statement |
-| `Statement#close` | [ ] TODO | Close statement (softer than drop) |
+| `Statement#cancel` | [x] DONE | Cancel running statement |
+| `Statement#close` | [x] DONE | Close statement (softer than drop) |
 | `Database#proc(sql) { }` | [ ] TODO | ODBCProc wrapper |
 | `Database#newstmt` | [ ] TODO | Create blank statement |
 | `ODBC.connect(dsn, user, pw)` | [ ] TODO | Credentials passed explicitly |

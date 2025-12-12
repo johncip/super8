@@ -31,6 +31,20 @@ module Super8
       result
     end
 
+    # Intercept cancel method to record statement cancellation
+    def cancel
+      result = @real_statement.cancel
+      @cassette.record_cancel(@statement_id)
+      result
+    end
+
+    # Intercept close method to record statement closure  
+    def close
+      result = @real_statement.close
+      @cassette.record_close(@statement_id)
+      result
+    end
+
     # Delegate all other method calls to the real statement for now.
     # Future phases will intercept specific methods (fetch, etc.)
     def method_missing(method_name, ...)
