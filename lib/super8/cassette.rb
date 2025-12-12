@@ -15,7 +15,6 @@ module Super8
       @name = name
       @dsn = nil
       @commands = []
-      @statement_counter = 0
     end
 
     # Full path to the cassette directory.
@@ -49,41 +48,6 @@ module Super8
     # Generic recording — stores method name and context in memory.
     def record(method, **context)
       @commands << {"method" => method.to_s, **stringify_keys(context)}
-    end
-
-    # Records a Database#run command to the command log
-    def record_run(sql, params=[])
-      statement_id = "stmt_#{@statement_counter}"
-      @statement_counter += 1
-      record(:run, sql: sql, params: params, statement_id: statement_id)
-      statement_id
-    end
-
-    # Records a Statement#columns command to the command log
-    def record_columns(statement_id, as_ary, result)
-      record(:columns, statement_id: statement_id, as_ary: as_ary, result: result)
-    end
-
-    # Records a Statement#fetch_all command with row data
-    def record_fetch_all(statement_id, result)
-      # Normalize nil to empty array to match CSV playback behavior
-      normalized_result = result || []
-      record(:fetch_all, statement_id: statement_id, rows_data: normalized_result)
-    end
-
-    # Records a Statement#drop command to the command log
-    def record_drop(statement_id)
-      record(:drop, statement_id: statement_id)
-    end
-
-    # Records a Statement#cancel command to the command log
-    def record_cancel(statement_id)
-      record(:cancel, statement_id: statement_id)
-    end
-
-    # Records a Statement#close command to the command log
-    def record_close(statement_id)
-      record(:close, statement_id: statement_id)
     end
 
     private
