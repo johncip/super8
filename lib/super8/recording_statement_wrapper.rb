@@ -1,8 +1,7 @@
 module Super8
   # Wraps an ODBC::Statement to intercept method calls for recording.
   # During record mode, delegates to the real statement and logs interactions.
-  # During playback mode, returns recorded responses without calling real methods.
-  class StatementWrapper
+  class RecordingStatementWrapper
     def initialize(real_statement, statement_id, cassette)
       @real_statement = real_statement
       @statement_id = statement_id

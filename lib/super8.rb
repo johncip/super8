@@ -1,7 +1,7 @@
 require_relative "super8/config"
 require_relative "super8/errors"
 require_relative "super8/cassette"
-require_relative "super8/statement_wrapper"
+require_relative "super8/recording_statement_wrapper"
 require "odbc"
 
 # Top-level module for Super 8.
@@ -37,7 +37,7 @@ module Super8
           db.define_singleton_method(:run) do |sql, *params|
             statement_id = cassette.record_run(sql, params)
             real_statement = original_run.call(sql, *params)
-            StatementWrapper.new(real_statement, statement_id, cassette)
+            RecordingStatementWrapper.new(real_statement, statement_id, cassette)
           end
 
           block&.call(db)
