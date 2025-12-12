@@ -14,6 +14,7 @@ Living TODO list for building Super8.
 - [x] Design cassette format for command log style (see cassette_schema.md)
 - [x] Decide matching strategy for parameterized vs literal SQL refactoring
 
+
 ## Phase 1: Record Mode (only record, no playback)
 
 Record mode implementation - capture real ODBC calls and save to cassette.
@@ -29,6 +30,7 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 - [x] Intercept `Statement#cancel` - record statement cancellation
 - [x] Intercept `Statement#close` - record statement closure
 
+
 ## Phase 2: Playback Mode
 
 Playback mode implementation - return recorded data, validate matches.
@@ -40,7 +42,19 @@ Playback mode implementation - return recorded data, validate matches.
 - [x] Query mismatch error
 - [ ] Integration test without database connection
 
-## Phase 3: Incremental Fetch
+
+## Phase 3: Extract gem
+
+- [ ] test that everything works with RetalixFetcher tests
+- [ ] extract with git filter-repo
+- [ ] bfg / remove references to my filesystem & work
+- [ ] add gemspec, other stuff
+- [ ] code cleanup
+- [ ] public github repo
+- [ ] be able to test with a local odbc server
+
+
+## Phase 4: Incremental Fetch
 
 Support different ways to retrieve data from a Statement.
 
@@ -50,7 +64,8 @@ Support different ways to retrieve data from a Statement.
 - [ ] Intercept `Statement#each` / `Statement#each_hash`
 - [ ] Command log format handles mixed fetch calls
 
-## Phase 4: Parameterized Queries
+
+## Phase 5: Parameterized Queries
 
 - [ ] Intercept `Database#run(sql, *args)` with parameters
 - [ ] Intercept `Database#do(sql, *args)`
@@ -58,7 +73,8 @@ Support different ways to retrieve data from a Statement.
 - [ ] Record template + params in cassette
 - [ ] Decide and implement matching strategy for params
 
-## Phase 5: Polish
+
+## Phase 6: Polish
 
 - [ ] RSpec metadata integration (`super8: "cassette_name"`)
 - [ ] Multiple record modes (`:once`, `:new_episodes`, `:all`, `:none`)
@@ -66,6 +82,7 @@ Support different ways to retrieve data from a Statement.
 - [ ] Better error messages
 - [ ] Documentation
 - [ ] Consider extracting as gem
+
 
 ## Out of Scope
 
