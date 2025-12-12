@@ -27,8 +27,7 @@ module Super8
 
       ODBC.define_singleton_method(:connect) do |dsn, &block|
         # TODO: Handle storing username when user calls ODBC.connect(dsn, user, password)
-        cassette.save
-        cassette.save_connection(dsn)
+        cassette.dsn = dsn
 
         original_connect.call(dsn) do |db|
           # Intercept Database#run to record SQL queries
@@ -47,6 +46,7 @@ module Super8
       yield
     ensure
       ODBC.define_singleton_method(:connect, original_connect) if original_connect
+      cassette&.save
     end
   end
 end

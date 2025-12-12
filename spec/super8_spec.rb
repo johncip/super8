@@ -1,6 +1,9 @@
 require "super8"
+require "fakefs/spec_helpers"
 
 RSpec.describe Super8 do
+  include FakeFS::SpecHelpers
+
   describe ".config" do
     it "returns a Config instance" do
       expect(described_class.config).to be_a(Super8::Config)

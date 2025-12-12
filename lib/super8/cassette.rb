@@ -9,12 +9,13 @@ module Super8
   # Each cassette is a directory containing commands and row data.
   class Cassette
     attr_reader :name
+    attr_accessor :dsn
 
     def initialize(name)
       @name = name
+      @dsn = nil
       @commands = []
       @statement_counter = 0
-      @rows_file_counter = 0
     end
 
     # Full path to the cassette directory.
@@ -26,9 +27,13 @@ module Super8
       Dir.exist?(path)
     end
 
-    # Creates the cassette directory. Called during recording.
+    # Writes all cassette data to disk in one pass.
+    # Creates directory, connection.yml, row files, and commands.yml.
     def save
       FileUtils.mkdir_p(path)
+      save_connection_file if @dsn
+      process_row_data!
+      save_commands_file
     end
 
     # Verifies the cassette exists. Called during playback.
@@ -37,115 +42,71 @@ module Super8
       raise CassetteNotFoundError, "Cassette not found: #{path}" unless exists?
     end
 
-    def save_connection(dsn)
-      File.write(File.join(path, "connection.yml"), {"dsn" => dsn}.to_yaml)
-    end
-
     def load_connection
       YAML.load_file(File.join(path, "connection.yml"))["dsn"]
+    end
+
+    # Generic recording — stores method name and context in memory.
+    def record(method, **context)
+      @commands << {"method" => method.to_s, **stringify_keys(context)}
     end
 
     # Records a Database#run command to the command log
     def record_run(sql, params=[])
       statement_id = "stmt_#{@statement_counter}"
       @statement_counter += 1
-
-      command = {
-        "method" => "run",
-        "sql" => sql,
-        "params" => params,
-        "statement_id" => statement_id
-      }
-
-      @commands << command
-      save_commands
+      record(:run, sql: sql, params: params, statement_id: statement_id)
       statement_id
     end
 
     # Records a Statement#columns command to the command log
     def record_columns(statement_id, as_ary, result)
-      command = {
-        "method" => "columns",
-        "statement_id" => statement_id,
-        "as_aray" => as_ary,
-        "result" => result
-      }
-
-      @commands << command
-      save_commands
+      record(:columns, statement_id: statement_id, as_aray: as_ary, result: result)
     end
 
-    # Records a Statement#fetch_all command and saves row data to file
-    #
-    # :reek:ControlParameter
+    # Records a Statement#fetch_all command with row data
     def record_fetch_all(statement_id, result)
       # Normalize nil to empty array to match CSV playback behavior
       normalized_result = result || []
-      record_rows_data(statement_id, "fetch_all", normalized_result, :csv)
+      record(:fetch_all, statement_id: statement_id, rows_data: normalized_result)
     end
 
     # Records a Statement#drop command to the command log
     def record_drop(statement_id)
-      command = {
-        "method" => "drop",
-        "statement_id" => statement_id
-      }
-
-      @commands << command
-      save_commands
+      record(:drop, statement_id: statement_id)
     end
 
     # Records a Statement#cancel command to the command log
     def record_cancel(statement_id)
-      command = {
-        "method" => "cancel",
-        "statement_id" => statement_id
-      }
-
-      @commands << command
-      save_commands
+      record(:cancel, statement_id: statement_id)
     end
 
     # Records a Statement#close command to the command log
     def record_close(statement_id)
-      command = {
-        "method" => "close",
-        "statement_id" => statement_id
-      }
-
-      @commands << command
-      save_commands
+      record(:close, statement_id: statement_id)
     end
 
     private
 
-    # Generic method to record row data in different formats
-    #
-    # :reek:LongParameterList
-    # :reek:TooManyStatements
-    def record_rows_data(statement_id, method_name, data, format)
-      extension = format == :csv ? "csv" : "yml"
-      file_name = "rows_#{@rows_file_counter}.#{extension}"
-      @rows_file_counter += 1
+    def stringify_keys(hash)
+      hash.transform_keys(&:to_s)
+    end
 
-      # Write data file in specified format
-      case format
-      when :csv
-        write_rows_csv_file(file_name, data)
-      when :yaml
-        write_rows_yaml_file(file_name, data)
-      else
-        raise ArgumentError, "Unsupported format: #{format}"
+    def save_connection_file
+      File.write(File.join(path, "connection.yml"), {"dsn" => @dsn}.to_yaml)
+    end
+
+    # Extracts row data from commands, writes to CSV files, replaces with file references
+    def process_row_data!
+      rows_file_counter = 0
+      @commands.each do |command|
+        next unless command.key?("rows_data")
+
+        file_name = "rows_#{rows_file_counter}.csv"
+        rows_file_counter += 1
+        write_rows_csv_file(file_name, command.delete("rows_data"))
+        command["rows_file"] = file_name
       end
-
-      # Add command to log
-      command = {
-        "method" => method_name,
-        "statement_id" => statement_id,
-        "rows_file" => file_name
-      }
-      @commands << command
-      save_commands
     end
 
     def write_rows_csv_file(file_name, data)
@@ -155,12 +116,7 @@ module Super8
       end
     end
 
-    def write_rows_yaml_file(file_name, data)
-      file_path = File.join(path, file_name)
-      File.write(file_path, data.to_yaml)
-    end
-
-    def save_commands
+    def save_commands_file
       commands_file = File.join(path, "commands.yml")
       File.write(commands_file, @commands.to_yaml)
     end
