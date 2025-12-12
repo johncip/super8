@@ -1,6 +1,7 @@
 require "yaml"
 require "csv"
 
+# :reek:DataClump
 # :reek:UncommunicativeModuleName
 module Super8
   # Represents a recorded cassette stored on disk.
@@ -80,6 +81,17 @@ module Super8
       # Normalize nil to empty array to match CSV playback behavior
       normalized_result = result || []
       record_rows_data(statement_id, "fetch_all", normalized_result, :csv)
+    end
+
+    # Records a Statement#drop command to the command log
+    def record_drop(statement_id)
+      command = {
+        "method" => "drop",
+        "statement_id" => statement_id
+      }
+
+      @commands << command
+      save_commands
     end
 
     private

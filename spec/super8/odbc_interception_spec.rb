@@ -324,4 +324,39 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       end
     end
   end
+
+  describe "Statement#drop" do
+    let(:fake_statement_result) { "un-deserializable test double" }
+
+    before do
+      allow(fake_db).to receive(:run).and_return(fake_statement)
+      allow(fake_statement).to receive(:drop).and_return(fake_statement_result)
+    end
+
+    it "records drop call and returns original result" do
+      result = nil
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("retalix") do |db|
+          statement = db.run("SELECT * FROM users")
+          result = statement.drop
+        end
+      end
+
+      # Should return the original result
+      expect(result).to eq(fake_statement_result)
+
+      # Should record the drop command
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+
+      drop_command = commands.find { |cmd| cmd["method"] == "drop" }
+      expect(drop_command).not_to be_nil
+
+      aggregate_failures do
+        expect(drop_command["method"]).to eq("drop")
+        expect(drop_command["statement_id"]).to eq("stmt_0")
+        expect(drop_command).not_to have_key("result")
+      end
+    end
+  end
 end
