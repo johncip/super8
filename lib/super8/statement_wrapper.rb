@@ -38,7 +38,7 @@ module Super8
       result
     end
 
-    # Intercept close method to record statement closure  
+    # Intercept close method to record statement closure
     def close
       result = @real_statement.close
       @cassette.record_close(@statement_id)

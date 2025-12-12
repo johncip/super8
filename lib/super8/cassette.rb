@@ -3,6 +3,7 @@ require "csv"
 
 # :reek:DataClump
 # :reek:UncommunicativeModuleName
+# :reek:TooManyMethods
 module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.

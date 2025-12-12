@@ -333,7 +333,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       allow(fake_statement).to receive(:drop).and_return(fake_statement_result)
     end
 
-    it "records drop call and returns original result" do
+    it "records drop call and returns original result" do # rubocop:disable RSpec/ExampleLength
       result = nil
       Super8.use_cassette(cassette_name) do
         ODBC.connect("retalix") do |db|
@@ -368,7 +368,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       allow(fake_statement).to receive(:cancel).and_return(fake_cancel_result)
     end
 
-    it "records cancel call and returns original result" do
+    it "records cancel call and returns original result" do # rubocop:disable RSpec/ExampleLength
       result = nil
       Super8.use_cassette(cassette_name) do
         ODBC.connect("retalix") do |db|
@@ -403,7 +403,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       allow(fake_statement).to receive(:close).and_return(fake_close_result)
     end
 
-    it "records close call and returns original result" do
+    it "records close call and returns original result" do # rubocop:disable RSpec/ExampleLength
       result = nil
       Super8.use_cassette(cassette_name) do
         ODBC.connect("retalix") do |db|
