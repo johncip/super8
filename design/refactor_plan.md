@@ -310,21 +310,25 @@ lib/super8/
 
 ## Migration Steps
 
-1. **Add generic `record`/`playback` methods to Cassette** — validation moves into `playback`. Remove method-specific `record_*` methods.
+1. **DONE: Add generic `record`/`playback` methods to Cassette** — validation moves into `playback`. Remove method-specific `record_*` methods.
 
-2. **Implement deferred `save`** — one method that writes connection.yml, commands.yml, and rows files.
+2. **DONE: Implement deferred `save`** — one method that writes connection.yml, commands.yml, and rows files.
 
-3. **Extract RecordingDatabaseWrapper** — move `db.run` interception out of `use_cassette`. Use `cassette.record`.
+3. **DONE: Extract RecordingDatabaseWrapper** — move `db.run` interception out of `use_cassette`. Use `cassette.record`.
 
-4. **Rename StatementWrapper → RecordingStatementWrapper** — have it use `cassette.record`.
+4. **DONE: Rename StatementWrapper → RecordingStatementWrapper** — have it use `cassette.record`.
 
-5. **Create PlaybackDatabaseWrapper and PlaybackStatementWrapper** — use `cassette.playback`.
+5. **DEFERRED: Create PlaybackDatabaseWrapper and PlaybackStatementWrapper** — use `cassette.playback`. (Deferred until playback is needed)
 
-6. **Create Orchestrator class** — move `use_cassette` logic there. Accept explicit `mode:` parameter.
+6. **DEFERRED: Create Orchestrator class** — move `use_cassette` logic there. Accept explicit `mode:` parameter. (Deferred - wrappers currently call `cassette.record` directly, creating coupling that Orchestrator was meant to eliminate)
 
 ---
 
-## Open Questions
+## Refactoring Status
 
-- Should wrappers share a common interface/base class, or is duck typing sufficient?
-- How should `method_missing` delegation work in playback mode (if at all)?
+**Completed:** Steps 1-4. The core refactoring objectives have been met:
+- Cassette is now a simple data object with generic `record` method and deferred persistence
+- Wrappers handle ODBC-specific concerns and call `cassette.record` with method name + context
+- Code is structured to make adding playback easier when needed
+
+**Deferred:** Steps 5-6. Orchestrator extraction and playback wrappers are not needed for current record-only use case.
