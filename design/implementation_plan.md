@@ -33,8 +33,6 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 
 Playback mode implementation - return recorded data, validate matches.
 
-- [ ] Move record functions into a mixin
-- [ ] Create mixin for playback functions
 - [ ] Be able to load cassette / command log
 - [ ] Return fake database object
 - [ ] Replay recorded interactions in sequence
