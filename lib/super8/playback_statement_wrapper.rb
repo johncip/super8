@@ -10,8 +10,9 @@ module Super8
     def fetch_all
       expected_command = @cassette.next_command
       validate_statement_command(expected_command, :fetch_all)
-      
-      expected_command["rows_file"] ? @cassette.load_rows_from_file(expected_command["rows_file"]) : []
+
+      rows_file_path = expected_command["rows_file"]
+      rows_file_path ? @cassette.load_rows_from_file(rows_file_path) : []
     end
 
     def columns
@@ -45,7 +46,7 @@ module Super8
 
     # :reek:BooleanParameter
     # :reek:ManualDispatch
-    def respond_to_missing?(method_name, include_private=false)
+    def respond_to_missing?(_method_name, _include_private=false)
       false
     end
 
@@ -55,19 +56,23 @@ module Super8
       validate_command_match(expected_command, method, statement_id: @statement_id)
     end
 
+    # :reek:FeatureEnvy
+    # :reek:NilCheck
     def validate_command_match(expected_command, method, **actual_context)
       raise CommandMismatchError, "No more recorded interactions" if expected_command.nil?
-      
+
       # Check method
       if expected_command["method"] != method.to_s
-        raise CommandMismatchError, "method: expected '#{expected_command["method"]}', got '#{method}'"
+        raise CommandMismatchError,
+              "method: expected '#{expected_command['method']}', got '#{method}'"
       end
-      
+
       # Check each key/value pair
       actual_context.each do |key, value|
         expected_value = expected_command[key.to_s]
         if expected_value != value
-          raise CommandMismatchError, "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
+          raise CommandMismatchError,
+                "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
         end
       end
     end

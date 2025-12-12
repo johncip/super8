@@ -9,7 +9,7 @@ module Super8
     def run(sql, *params)
       expected_command = @cassette.next_command
       validate_command_match(expected_command, :run, sql: sql, params: params)
-      
+
       statement_id = expected_command["statement_id"]
       PlaybackStatementWrapper.new(statement_id, @cassette)
     end
@@ -21,25 +21,29 @@ module Super8
 
     # :reek:BooleanParameter
     # :reek:ManualDispatch
-    def respond_to_missing?(method_name, include_private=false)
+    def respond_to_missing?(_method_name, _include_private=false)
       false
     end
 
     private
 
+    # :reek:NilCheck
+    # :reek:FeatureEnvy
     def validate_command_match(expected_command, method, **actual_context)
       raise CommandMismatchError, "No more recorded interactions" if expected_command.nil?
-      
+
       # Check method
       if expected_command["method"] != method.to_s
-        raise CommandMismatchError, "method: expected '#{expected_command["method"]}', got '#{method}'"
+        raise CommandMismatchError,
+              "method: expected '#{expected_command['method']}', got '#{method}'"
       end
-      
+
       # Check each key/value pair
       actual_context.each do |key, value|
         expected_value = expected_command[key.to_s]
         if expected_value != value
-          raise CommandMismatchError, "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
+          raise CommandMismatchError,
+                "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
         end
       end
     end
