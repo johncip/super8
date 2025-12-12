@@ -1,14 +1,14 @@
 require "yaml"
 require "csv"
 
-# :reek:DataClump
-# :reek:UncommunicativeModuleName
-# :reek:TooManyMethods
 module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.
+  #
+  # :reek:MissingSafeMethod
   class Cassette
     attr_reader :name
+    # :reek:Attribute
     attr_accessor :dsn
 
     def initialize(name)
@@ -52,6 +52,7 @@ module Super8
 
     private
 
+    # :reek:UtilityFunction
     def stringify_keys(hash)
       hash.transform_keys(&:to_s)
     end
@@ -61,6 +62,8 @@ module Super8
     end
 
     # Extracts row data from commands, writes to CSV files, replaces with file references
+    #
+    # :reek:FeatureEnvy
     def process_row_data!
       rows_file_counter = 0
       @commands.each do |command|
