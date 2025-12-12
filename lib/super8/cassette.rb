@@ -15,6 +15,7 @@ module Super8
       @name = name
       @dsn = nil
       @commands = []
+      @command_index = 0
     end
 
     # Full path to the cassette directory.
@@ -35,14 +36,29 @@ module Super8
       save_commands_file
     end
 
-    # Verifies the cassette exists. Called during playback.
+    # Loads cassette data for playback.
     # Raises CassetteNotFoundError if missing.
     def load
       raise CassetteNotFoundError, "Cassette not found: #{path}" unless exists?
+      @commands = YAML.load_file(File.join(path, "commands.yml"))
+      @command_index = 0
     end
 
     def load_connection
-      YAML.load_file(File.join(path, "connection.yml"))["dsn"]
+      YAML.load_file(File.join(path, "connection.yml"))
+    end
+
+    # Get next command during playback.
+    def next_command
+      return nil if @command_index >= @commands.length
+      command = @commands[@command_index]
+      @command_index += 1
+      command
+    end
+
+    # Load row data from CSV files.
+    def load_rows_from_file(filename)
+      CSV.read(File.join(path, filename))
     end
 
     # Generic recording — stores method name and context in memory.

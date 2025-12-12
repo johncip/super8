@@ -3,6 +3,8 @@ require_relative "super8/errors"
 require_relative "super8/cassette"
 require_relative "super8/recording_database_wrapper"
 require_relative "super8/recording_statement_wrapper"
+require_relative "super8/playback_database_wrapper"
+require_relative "super8/playback_statement_wrapper"
 require "odbc"
 
 # Top-level module for Super 8.
@@ -22,11 +24,32 @@ module Super8
     #
     # :reek:TooManyStatements
     # :reek:NestedIterators
-    def use_cassette(name)
+    def use_cassette(name, mode: :record)
       cassette = Cassette.new(name)
+      
+      case mode
+      when :record
+        setup_recording_mode(cassette)
+      when :playback
+        setup_playback_mode(cassette)
+      else
+        raise ArgumentError, "Unknown mode: #{mode}. Use :record or :playback"
+      end
+
+      yield
+    ensure
+      cleanup_odbc_intercept
+      cassette.save if mode == :record
+    end
+
+    private
+
+    def setup_recording_mode(cassette)
       original_connect = ODBC.method(:connect)
+      @original_connect = original_connect
 
       ODBC.define_singleton_method(:connect) do |dsn, &block|
+        # TODO: Need to either support multiple ODBC.connect calls per cassette or fail fast when detected
         # TODO: Handle storing username when user calls ODBC.connect(dsn, user, password)
         cassette.dsn = dsn
 
@@ -35,11 +58,30 @@ module Super8
           block&.call(wrapped_db)
         end
       end
+    end
 
-      yield
-    ensure
-      ODBC.define_singleton_method(:connect, original_connect) if original_connect
-      cassette&.save
+    def setup_playback_mode(cassette)
+      cassette.load  # Load cassette data
+
+      original_connect = ODBC.method(:connect)
+      @original_connect = original_connect
+      
+      ODBC.define_singleton_method(:connect) do |dsn, &block|
+        # DSN validation
+        recorded_dsn = cassette.load_connection["dsn"]
+        unless dsn == recorded_dsn
+          raise CommandMismatchError, "dsn: expected '#{recorded_dsn}', got '#{dsn}'"
+        end
+        
+        # Return fake database object
+        playback_db = PlaybackDatabaseWrapper.new(cassette)
+        block&.call(playback_db)
+      end
+    end
+
+    def cleanup_odbc_intercept
+      ODBC.define_singleton_method(:connect, @original_connect) if @original_connect
+      @original_connect = nil
     end
   end
 end

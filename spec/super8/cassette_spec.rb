@@ -54,6 +54,7 @@ RSpec.describe Super8::Cassette do
 
     it "succeeds when cassette exists" do
       FileUtils.mkdir_p("#{cassette_dir}/existing")
+      File.write("#{cassette_dir}/existing/commands.yml", [].to_yaml)
       cassette = described_class.new("existing")
       expect { cassette.load }.not_to raise_error
     end
