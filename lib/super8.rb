@@ -1,6 +1,7 @@
 require_relative "super8/config"
 require_relative "super8/errors"
 require_relative "super8/cassette"
+require_relative "super8/recording_database_wrapper"
 require_relative "super8/recording_statement_wrapper"
 require "odbc"
 
@@ -30,16 +31,8 @@ module Super8
         cassette.dsn = dsn
 
         original_connect.call(dsn) do |db|
-          # Intercept Database#run to record SQL queries
-          original_run = db.method(:run)
-
-          db.define_singleton_method(:run) do |sql, *params|
-            statement_id = cassette.record_run(sql, params)
-            real_statement = original_run.call(sql, *params)
-            RecordingStatementWrapper.new(real_statement, statement_id, cassette)
-          end
-
-          block&.call(db)
+          wrapped_db = RecordingDatabaseWrapper.new(db, cassette)
+          block&.call(wrapped_db)
         end
       end
 
