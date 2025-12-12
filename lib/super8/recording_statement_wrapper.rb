@@ -12,35 +12,37 @@ module Super8
     # :reek:BooleanParameter
     def columns(as_ary=false) # rubocop:disable Style/OptionalBooleanParameter
       result = @real_statement.columns(as_ary)
-      @cassette.record_columns(@statement_id, as_ary, result)
+      @cassette.record(:columns, statement_id: @statement_id, as_ary: as_ary, result: result)
       result
     end
 
     # Intercept fetch_all method to record row data
     def fetch_all
       result = @real_statement.fetch_all
-      @cassette.record_fetch_all(@statement_id, result)
+      # Normalize nil to empty array to match CSV playback behavior
+      normalized_result = result || []
+      @cassette.record(:fetch_all, statement_id: @statement_id, rows_data: normalized_result)
       result
     end
 
     # Intercept drop method to record cleanup call
     def drop
       result = @real_statement.drop
-      @cassette.record_drop(@statement_id)
+      @cassette.record(:drop, statement_id: @statement_id)
       result
     end
 
     # Intercept cancel method to record statement cancellation
     def cancel
       result = @real_statement.cancel
-      @cassette.record_cancel(@statement_id)
+      @cassette.record(:cancel, statement_id: @statement_id)
       result
     end
 
     # Intercept close method to record statement closure
     def close
       result = @real_statement.close
-      @cassette.record_close(@statement_id)
+      @cassette.record(:close, statement_id: @statement_id)
       result
     end
 
