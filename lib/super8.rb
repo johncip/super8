@@ -26,7 +26,7 @@ module Super8
     # :reek:NestedIterators
     def use_cassette(name, mode: :record)
       cassette = Cassette.new(name)
-      
+
       case mode
       when :record
         setup_recording_mode(cassette)
@@ -44,12 +44,13 @@ module Super8
 
     private
 
+    # :reek:NestedIterators
     def setup_recording_mode(cassette)
       original_connect = ODBC.method(:connect)
       @original_connect = original_connect
 
       ODBC.define_singleton_method(:connect) do |dsn, &block|
-        # TODO: Need to either support multiple ODBC.connect calls per cassette or fail fast when detected
+        # TODO: Need to either support multiple connect calls or fail when detected
         # TODO: Handle storing username when user calls ODBC.connect(dsn, user, password)
         cassette.dsn = dsn
 
@@ -60,19 +61,20 @@ module Super8
       end
     end
 
+    # :reek:TooManyStatements
     def setup_playback_mode(cassette)
-      cassette.load  # Load cassette data
+      cassette.load # Load cassette data
 
       original_connect = ODBC.method(:connect)
       @original_connect = original_connect
-      
+
       ODBC.define_singleton_method(:connect) do |dsn, &block|
         # DSN validation
         recorded_dsn = cassette.load_connection["dsn"]
         unless dsn == recorded_dsn
           raise CommandMismatchError, "dsn: expected '#{recorded_dsn}', got '#{dsn}'"
         end
-        
+
         # Return fake database object
         playback_db = PlaybackDatabaseWrapper.new(cassette)
         block&.call(playback_db)
