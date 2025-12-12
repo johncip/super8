@@ -33,11 +33,11 @@ Record mode implementation - capture real ODBC calls and save to cassette.
 
 Playback mode implementation - return recorded data, validate matches.
 
-- [ ] Be able to load cassette / command log
-- [ ] Return fake database object
-- [ ] Replay recorded interactions in sequence
-- [ ] Connection scope validation (DSN match)
-- [ ] Query mismatch error with diff
+- [x] Be able to load cassette / command log
+- [x] Return fake database object
+- [x] Replay recorded interactions in sequence
+- [x] Connection scope validation (DSN match)
+- [x] Query mismatch error
 - [ ] Integration test without database connection
 
 ## Phase 3: Incremental Fetch
