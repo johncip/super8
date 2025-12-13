@@ -45,12 +45,12 @@ Playback mode implementation - return recorded data, validate matches.
 
 ## Phase 3: Extract gem
 
-- [ ] test that everything works with RetalixFetcher tests
-- [ ] extract with git filter-repo
-- [ ] bfg / remove references to my filesystem & work
+- [x] test that everything works with RetalixFetcher
+- [x] extract with git filter-repo
+- [x] move to public github repo
 - [ ] add gemspec, other stuff
+- [ ] bfg / remove references to my filesystem & work
 - [ ] code cleanup
-- [ ] public github repo
 - [ ] be able to test with a local odbc server
 
 
