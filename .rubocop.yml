@@ -1,0 +1,129 @@
+plugins:
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'Gemfile'
+    - 'Rakefile'
+    - '.pryrc'
+  TargetRubyVersion: 3.1
+
+Layout/TrailingWhitespace:
+  Enabled: false
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*'
+
+Lint/DuplicateBranch:
+  IgnoreLiteralBranches: true
+
+Metrics/BlockLength:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/LineLength:
+  Max: 100
+  AllowHeredoc: true
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_first_parameter
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+  EnforcedStyleForEmptyBraces: no_space
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: aligned
+
+Naming/VariableNumber:
+  Exclude:
+    - 'spec/**/*'
+
+Style/AutoResourceCleanup:
+  Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
+  Enabled: true
+
+Style/BlockComments:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/CollectionMethods:
+  Description: 'Preferred collection methods.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
+  Enabled: true
+
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
+Style/FormatString:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/OneLineConditional:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/WordArray:
+  EnforcedStyle: percent
+  MinSize: 3
+
+RSpec/ImplicitSubject:
+  EnforcedStyle: single_statement_only
+
+RSpec/MultipleExpectations:
+  Max: 4
+
+RSpec/ExampleLength:
+  Max: 6
+  Exclude:
+    - 'spec/features/**/*'
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
