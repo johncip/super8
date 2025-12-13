@@ -1,3 +1,4 @@
+require_relative "super8/version"
 require_relative "super8/config"
 require_relative "super8/errors"
 require_relative "super8/cassette"

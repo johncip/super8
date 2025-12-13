@@ -1,10 +1,62 @@
 # Super 8 🎞️
 
-A WIP attempt to mostly-AI-code something that works like [vcr](https://github.com/vcr/vcr), but for [ODBC](https://en.wikipedia.org/wiki/Open_Database_Connectivity) queries instead of HTTP requests, and to document the process.
+Record and replay ruby-odbc sessions for easier, more accurate testing.
 
-* [Design docs](https://github.com/johncip/super8/tree/main/design)
-* [Copilot chat logs](https://github.com/johncip/super8/tree/main/design/copilot_chat_logs)
-* [Architecture decision records](https://github.com/johncip/super8/tree/main/design/decision_records)
+Super 8 is a "vcr"-like library for recording and playing back ODBC interactions made with ruby-odbc, for use with automated testing. More accurate than manually mocking and less work than adding an ODBC-enabled server to your test stack.
+
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'super8', github: 'johncip/super8', branch: 'main'
+```
+
+Then execute:
+
+```bash
+bundle install
+```
+
+
+## Requirements
+
+- Ruby 3.1 or higher
+- ruby-odbc gem
+
+
+## Usage
+
+Configure Super8 in your test setup (e.g., `spec/spec_helper.rb`):
+
+```ruby
+require 'super8'
+
+Super8.configure do |config|
+  config.cassette_library_dir = 'spec/cassettes'
+end
+```
+
+Use cassettes in your tests:
+
+```ruby
+RSpec.describe MyODBCClient do
+  it 'queries the database' do
+    Super8.use_cassette('my_query', mode: :record) do
+      # Your ODBC code here
+      db = ODBC.connect('DSN=MyDatabase')
+      result = db.run('SELECT * FROM users')
+      # assertions...
+    end
+  end
+end
+```
+
+Modes:
+- `:record` - Records ODBC interactions to a cassette file
+- `:playback` - Replays recorded interactions without connecting to the database
+
 
 ## Motivation
 
@@ -16,14 +68,15 @@ In the past, I would stub the ODBC parts out, which means that the querying side
 
 **vcr** is a library for "recording" HTTP API requests, so that they can be accurately mocked in ruby tests. It stores the request as well as the response, so that if the request made changes, it can be considered a test failure. It's also very easy to record "cassettes." I've wanted something like that for for ODBC.
 
-## Success criteria
 
-- [x] be able to "record" ODBC connections+queries+responses
-- [x] be able to "play back" the responses
-- [x] changes to tests are minimal -- basically just loading the library in
-- [ ] packaged as a gem (WIP)
-- [ ] (nice to have) the tool is general enough to warrant publishing on [rubygems.org](https://rubygems.org/)
+## Development
 
-## Documenting AI-assisted workflow
+This project was developed with extensive AI assistance as an experiment in AI-assisted coding workflows. The process and decisions are documented in the [design directory](design/).
 
-As a means of refining how I use these tools, the idea here is to generate as much as possible using GitHub Copilot, and to document the process. I will save the chat logs, and create artifacts, like [software design documents](https://www.atlassian.com/work-management/knowledge-sharing/documentation/software-design-document) and [architecture decision records](https://github.com/joelparkerhenderson/architecture-decision-record?tab=readme-ov-file).
+* [Design docs](design/)
+* [Copilot chat logs](design/copilot_chat_logs/)
+* [Architecture decision records](design/decision_records/)
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](LICENSE).
