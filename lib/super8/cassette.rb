@@ -40,7 +40,10 @@ module Super8
     # Raises CassetteNotFoundError if missing.
     def load
       raise CassetteNotFoundError, "Cassette not found: #{path}" unless exists?
-      @commands = YAML.load_file(File.join(path, "commands.yml"))
+      @commands = YAML.load_file(
+        File.join(path, "commands.yml"),
+        permitted_classes: [ODBC::Column]
+      )
       @command_index = 0
     end
 
