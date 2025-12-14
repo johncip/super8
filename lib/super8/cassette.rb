@@ -98,7 +98,11 @@ module Super8
     def write_rows_csv_file(file_name, data)
       file_path = File.join(path, file_name)
       CSV.open(file_path, "w") do |csv|
-        data.each { |row| csv << row }
+        data.each do |row|
+          csv << row.map do |field|
+            field&.encode(Super8.config.encoding, invalid: :replace, undef: :replace, replace: "?")
+          end
+        end
       end
     end
 
