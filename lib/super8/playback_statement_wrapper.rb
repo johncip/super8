@@ -18,7 +18,7 @@ module Super8
     def columns
       expected_command = @cassette.next_command
       validate_statement_command(expected_command, :columns)
-      expected_command["columns"]
+      expected_command["result"]
     end
 
     def drop
