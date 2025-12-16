@@ -2,16 +2,17 @@ module Super8
   # Wraps ODBC calls during playback mode.
   # Validates that interactions match recorded commands and returns recorded data.
   class PlaybackDatabaseWrapper
-    def initialize(cassette)
+    def initialize(cassette, connection_id)
       @cassette = cassette
+      @connection_id = connection_id
     end
 
     def run(sql, *params)
       expected_command = @cassette.next_command
-      validate_command_match(expected_command, :run, sql: sql, params: params)
+      validate_command_match(expected_command, :run, connection_id: @connection_id, sql: sql, params: params)
 
       statement_id = expected_command["statement_id"]
-      PlaybackStatementWrapper.new(statement_id, @cassette)
+      PlaybackStatementWrapper.new(statement_id, @cassette, @connection_id)
     end
 
     # Delegate other methods - they shouldn't be called in typical playback scenarios
