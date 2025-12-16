@@ -22,9 +22,6 @@ module Super8
     # Wraps a block with cassette recording/playback.
     # In record mode, ODBC calls are captured and saved.
     # In playback mode, recorded responses are returned.
-    #
-    # :reek:TooManyStatements
-    # :reek:NestedIterators
     def use_cassette(name, mode: :record)
       cassette = Cassette.new(name)
 
@@ -45,24 +42,24 @@ module Super8
 
     private
 
-    # :reek:NestedIterators
     def setup_recording_mode(cassette)
       original_connect = ODBC.method(:connect)
       @original_connect = original_connect
 
       ODBC.define_singleton_method(:connect) do |dsn, &block|
-        # TODO: Need to either support multiple connect calls or fail when detected
-        # TODO: Handle storing username when user calls ODBC.connect(dsn, user, password)
-        cassette.dsn = dsn
+        # Generate connection ID for this connection
+        connection_id = cassette.next_connection_id
+
+        # Record connect command with connection metadata
+        cassette.record(:connect, connection_id: connection_id, dsn: dsn)
 
         original_connect.call(dsn) do |db|
-          wrapped_db = RecordingDatabaseWrapper.new(db, cassette)
+          wrapped_db = RecordingDatabaseWrapper.new(db, cassette, connection_id)
           block&.call(wrapped_db)
         end
       end
     end
 
-    # :reek:TooManyStatements
     def setup_playback_mode(cassette)
       cassette.load # Load cassette data
 
@@ -70,14 +67,27 @@ module Super8
       @original_connect = original_connect
 
       ODBC.define_singleton_method(:connect) do |dsn, &block|
-        # DSN validation
-        recorded_dsn = cassette.load_connection["dsn"]
+        # Get next connect command from cassette
+        expected_command = cassette.next_command
+        raise CommandMismatchError, "No more recorded interactions" if expected_command.nil?
+
+        # Validate it's a connect command
+        unless expected_command["method"] == "connect"
+          raise CommandMismatchError,
+                "method: expected 'connect', got '#{expected_command['method']}'"
+        end
+
+        # Validate DSN matches
+        recorded_dsn = expected_command["dsn"]
         unless dsn == recorded_dsn
           raise CommandMismatchError, "dsn: expected '#{recorded_dsn}', got '#{dsn}'"
         end
 
+        # Extract connection ID
+        connection_id = expected_command["connection_id"]
+
         # Return fake database object
-        playback_db = PlaybackDatabaseWrapper.new(cassette)
+        playback_db = PlaybackDatabaseWrapper.new(cassette, connection_id)
         block&.call(playback_db)
       end
     end
