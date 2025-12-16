@@ -1,0 +1,11 @@
+---
+exclude_paths:
+  - scripts
+
+detectors:
+  UncommunicativeModuleName:
+    accept:
+      - Super8
+  
+  ManualDispatch:
+    enabled: false

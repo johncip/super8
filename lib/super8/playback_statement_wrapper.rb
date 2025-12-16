@@ -2,9 +2,10 @@ module Super8
   # Wraps ODBC Statement calls during playback mode.
   # Validates that statement interactions match recorded commands and returns recorded data.
   class PlaybackStatementWrapper
-    def initialize(statement_id, cassette)
+    def initialize(statement_id, cassette, connection_id)
       @statement_id = statement_id
       @cassette = cassette
+      @connection_id = connection_id
     end
 
     def fetch_all
@@ -44,8 +45,6 @@ module Super8
       raise NoMethodError, "Method #{method_name} not implemented for playback"
     end
 
-    # :reek:BooleanParameter
-    # :reek:ManualDispatch
     def respond_to_missing?(_method_name, _include_private=false)
       false
     end
@@ -53,7 +52,8 @@ module Super8
     private
 
     def validate_statement_command(expected_command, method)
-      validate_command_match(expected_command, method, statement_id: @statement_id)
+      validate_command_match(expected_command, method,
+                             connection_id: @connection_id, statement_id: @statement_id)
     end
 
     # :reek:FeatureEnvy

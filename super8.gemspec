@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/johncip/super8"
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir["lib/**/*", "spec/**/*", "LICENSE", "README.md"]
@@ -28,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ruby-odbc"
 
   # Development dependencies
+  spec.add_development_dependency "fakefs"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "fakefs"
 end

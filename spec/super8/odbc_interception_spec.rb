@@ -21,17 +21,23 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
   end
 
   describe "ODBC.connect" do
-    it "saves DSN to connection.yml" do
+    it "records connect command to commands.yml" do
       Super8.use_cassette(cassette_name) do
         ODBC.connect("retalix") {} # rubocop:disable Lint/EmptyBlock
       end
 
-      connection_file = File.join(cassette_path, "connection.yml")
-      connection_data = YAML.load_file(connection_file)
-      expect(connection_data["dsn"]).to eq("retalix")
+      commands_file = File.join(cassette_path, "commands.yml")
+      commands = YAML.load_file(commands_file)
+      connect_command = commands.first
+
+      aggregate_failures do
+        expect(connect_command["method"]).to eq("connect")
+        expect(connect_command["connection_id"]).to eq("a")
+        expect(connect_command["dsn"]).to eq("retalix")
+      end
     end
 
-    it "restores original ODBC.connect after use_cassette block" do # rubocop:disable RSpec/ExampleLength
+    it "restores original ODBC.connect after use_cassette block" do
       method_during_block = nil
 
       Super8.use_cassette(cassette_name) do
@@ -63,15 +69,16 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       commands = YAML.load_file(commands_file)
       expect(commands).to be_an(Array)
-      expect(commands.length).to eq(1)
+      expect(commands.length).to eq(2) # connect + run
 
-      first_command = commands.first
+      run_command = commands[1]
 
       aggregate_failures do
-        expect(first_command["method"]).to eq("run")
-        expect(first_command["sql"]).to eq(sql)
-        expect(first_command["params"]).to eq([])
-        expect(first_command["statement_id"]).to match(/stmt_\d+/)
+        expect(run_command["method"]).to eq("run")
+        expect(run_command["connection_id"]).to eq("a")
+        expect(run_command["sql"]).to eq(sql)
+        expect(run_command["params"]).to eq([])
+        expect(run_command["statement_id"]).to eq(1)
       end
     end
 
@@ -91,9 +98,10 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       commands_file = File.join(cassette_path, "commands.yml")
       commands = YAML.load_file(commands_file)
 
-      expect(commands.length).to eq(2)
-      expect(commands[0]["statement_id"]).to eq("stmt_0")
-      expect(commands[1]["statement_id"]).to eq("stmt_1")
+      run_commands = commands.select { |cmd| cmd["method"] == "run" }
+      expect(run_commands.length).to eq(2)
+      expect(run_commands[0]["statement_id"]).to eq(1)
+      expect(run_commands[1]["statement_id"]).to eq(2)
     end
 
     it "records commands in array order" do # rubocop:disable RSpec/ExampleLength
@@ -110,8 +118,9 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       commands = YAML.load_file(commands_file)
 
       expect(commands).to be_an(Array)
-      expect(commands.length).to eq(1)
-      expect(commands.first["method"]).to eq("run")
+      expect(commands.length).to eq(2) # connect + run
+      expect(commands[0]["method"]).to eq("connect")
+      expect(commands[1]["method"]).to eq("run")
     end
   end
 
@@ -144,7 +153,8 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(columns_command["method"]).to eq("columns")
-        expect(columns_command["statement_id"]).to eq("stmt_0")
+        expect(columns_command["connection_id"]).to eq("a")
+        expect(columns_command["statement_id"]).to eq(1)
         expect(columns_command["as_ary"]).to be false
         expect(columns_command["result"]).to eq(columns_hash)
       end
@@ -171,7 +181,8 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(columns_command["method"]).to eq("columns")
-        expect(columns_command["statement_id"]).to eq("stmt_0")
+        expect(columns_command["connection_id"]).to eq("a")
+        expect(columns_command["statement_id"]).to eq(1)
         expect(columns_command["as_ary"]).to be true
         expect(columns_command["result"]).to eq(columns_array)
       end
@@ -229,12 +240,13 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       aggregate_failures do
         expect(fetch_command).not_to be_nil
         expect(fetch_command["method"]).to eq("fetch_all")
-        expect(fetch_command["statement_id"]).to eq("stmt_0")
-        expect(fetch_command["rows_file"]).to eq("rows_0.csv")
+        expect(fetch_command["connection_id"]).to eq("a")
+        expect(fetch_command["statement_id"]).to eq(1)
+        expect(fetch_command["rows_file"]).to eq("a_1_fetch_all.csv")
       end
 
       # Check CSV file was created with correct data
-      csv_file = File.join(cassette_path, "rows_0.csv")
+      csv_file = File.join(cassette_path, "a_1_fetch_all.csv")
       expect(File.exist?(csv_file)).to be true
 
       csv_content = CSV.read(csv_file)
@@ -257,10 +269,10 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       commands = YAML.load_file(commands_file)
 
       fetch_command = commands.find { |cmd| cmd["method"] == "fetch_all" }
-      expect(fetch_command["rows_file"]).to eq("rows_0.csv")
+      expect(fetch_command["rows_file"]).to eq("a_1_fetch_all.csv")
 
       # CSV file should exist but be empty
-      csv_file = File.join(cassette_path, "rows_0.csv")
+      csv_file = File.join(cassette_path, "a_1_fetch_all.csv")
       expect(File.exist?(csv_file)).to be true
       expect(CSV.read(csv_file)).to eq([])
     end
@@ -279,14 +291,14 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       end
 
       # But in the cassette, it should be stored as empty array
-      csv_file = File.join(cassette_path, "rows_0.csv")
+      csv_file = File.join(cassette_path, "a_1_fetch_all.csv")
       expect(File.exist?(csv_file)).to be true
       expect(CSV.read(csv_file)).to eq([]) # Stored as empty array
     end
 
     describe "multiple fetch_all calls with sequential file naming" do
-      let(:row_data1) { [["001", "Alice"]] } # rubocop:disable RSpec/IndexedLet
-      let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] } # rubocop:disable RSpec/IndexedLet
+      let(:row_data1) { [["001", "Alice"]] }
+      let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] }
 
       before do
         fake_statement1 = instance_double(ODBC::Statement)
@@ -306,21 +318,21 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
         end
       end
 
-      it "creates CSV files with sequential numbering" do
-        expect(File.exist?(File.join(cassette_path, "rows_0.csv"))).to be true
-        expect(File.exist?(File.join(cassette_path, "rows_1.csv"))).to be true
+      it "creates CSV files with connection and statement IDs" do
+        expect(File.exist?(File.join(cassette_path, "a_1_fetch_all.csv"))).to be true
+        expect(File.exist?(File.join(cassette_path, "a_2_fetch_all.csv"))).to be true
       end
 
-      it "writes correct data to sequentially numbered CSV files" do
-        expect(CSV.read(File.join(cassette_path, "rows_0.csv"))).to eq(row_data1)
-        expect(CSV.read(File.join(cassette_path, "rows_1.csv"))).to eq(row_data2)
+      it "writes correct data to CSV files" do
+        expect(CSV.read(File.join(cassette_path, "a_1_fetch_all.csv"))).to eq(row_data1)
+        expect(CSV.read(File.join(cassette_path, "a_2_fetch_all.csv"))).to eq(row_data2)
       end
 
-      it "records commands with sequential file references" do
+      it "records commands with correct file references" do
         commands = YAML.load_file(File.join(cassette_path, "commands.yml"))
         fetch_commands = commands.select { |cmd| cmd["method"] == "fetch_all" }
-        expect(fetch_commands[0]["rows_file"]).to eq("rows_0.csv")
-        expect(fetch_commands[1]["rows_file"]).to eq("rows_1.csv")
+        expect(fetch_commands[0]["rows_file"]).to eq("a_1_fetch_all.csv")
+        expect(fetch_commands[1]["rows_file"]).to eq("a_2_fetch_all.csv")
       end
     end
   end
@@ -354,7 +366,8 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(drop_command["method"]).to eq("drop")
-        expect(drop_command["statement_id"]).to eq("stmt_0")
+        expect(drop_command["connection_id"]).to eq("a")
+        expect(drop_command["statement_id"]).to eq(1)
         expect(drop_command).not_to have_key("result")
       end
     end
@@ -389,7 +402,8 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(cancel_command["method"]).to eq("cancel")
-        expect(cancel_command["statement_id"]).to eq("stmt_0")
+        expect(cancel_command["connection_id"]).to eq("a")
+        expect(cancel_command["statement_id"]).to eq(1)
         expect(cancel_command).not_to have_key("result")
       end
     end
@@ -424,9 +438,97 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
 
       aggregate_failures do
         expect(close_command["method"]).to eq("close")
-        expect(close_command["statement_id"]).to eq("stmt_0")
+        expect(close_command["connection_id"]).to eq("a")
+        expect(close_command["statement_id"]).to eq(1)
         expect(close_command).not_to have_key("result")
       end
+    end
+  end
+
+  describe "multiple connections" do
+    let(:fake_db1) { instance_double(ODBC::Database) }
+    let(:fake_db2) { instance_double(ODBC::Database) }
+    let(:fake_stmt1) { instance_double(ODBC::Statement) }
+    let(:fake_stmt2) { instance_double(ODBC::Statement) }
+
+    before do
+      allow(ODBC).to receive(:connect).with("dsn_one") do |&block|
+        block&.call(fake_db1)
+      end
+      allow(ODBC).to receive(:connect).with("dsn_two") do |&block|
+        block&.call(fake_db2)
+      end
+      allow(fake_db1).to receive(:run).and_return(fake_stmt1)
+      allow(fake_db2).to receive(:run).and_return(fake_stmt2)
+      allow(fake_stmt1).to receive(:fetch_all).and_return([["conn1_data"]])
+      allow(fake_stmt2).to receive(:fetch_all).and_return([["conn2_data"]])
+    end
+
+    it "assigns different connection IDs to each connection" do
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("dsn_one") do |db1|
+          db1.run("SELECT * FROM table1")
+        end
+        ODBC.connect("dsn_two") do |db2|
+          db2.run("SELECT * FROM table2")
+        end
+      end
+
+      commands = YAML.load_file(File.join(cassette_path, "commands.yml"))
+      connect_commands = commands.select { |cmd| cmd["method"] == "connect" }
+
+      expect(connect_commands[0]["connection_id"]).to eq("a")
+      expect(connect_commands[1]["connection_id"]).to eq("b")
+    end
+
+    it "uses per-connection statement IDs" do # rubocop:disable RSpec/ExampleLength
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("dsn_one") do |db1|
+          db1.run("SELECT * FROM table1")
+          db1.run("SELECT * FROM table2")
+        end
+        ODBC.connect("dsn_two") do |db2|
+          db2.run("SELECT * FROM table3")
+        end
+      end
+
+      commands = YAML.load_file(File.join(cassette_path, "commands.yml"))
+      run_commands = commands.select { |cmd| cmd["method"] == "run" }
+
+      # Connection a has statements 1 and 2
+      aggregate_failures do
+        expect(run_commands[0]["connection_id"]).to eq("a")
+        expect(run_commands[0]["statement_id"]).to eq(1)
+        expect(run_commands[1]["connection_id"]).to eq("a")
+        expect(run_commands[1]["statement_id"]).to eq(2)
+      end
+
+      # Connection b has statement 1 (independent namespace)
+      aggregate_failures do
+        expect(run_commands[2]["connection_id"]).to eq("b")
+        expect(run_commands[2]["statement_id"]).to eq(1)
+      end
+    end
+
+    it "uses connection-specific file names" do # rubocop:disable RSpec/ExampleLength
+      Super8.use_cassette(cassette_name) do
+        ODBC.connect("dsn_one") do |db1|
+          stmt = db1.run("SELECT * FROM table1")
+          stmt.fetch_all
+        end
+        ODBC.connect("dsn_two") do |db2|
+          stmt = db2.run("SELECT * FROM table2")
+          stmt.fetch_all
+        end
+      end
+
+      # Check files use correct connection prefixes
+      expect(File.exist?(File.join(cassette_path, "a_1_fetch_all.csv"))).to be true
+      expect(File.exist?(File.join(cassette_path, "b_1_fetch_all.csv"))).to be true
+
+      # Check file contents
+      expect(CSV.read(File.join(cassette_path, "a_1_fetch_all.csv"))).to eq([["conn1_data"]])
+      expect(CSV.read(File.join(cassette_path, "b_1_fetch_all.csv"))).to eq([["conn2_data"]])
     end
   end
 end
