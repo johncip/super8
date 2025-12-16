@@ -13,7 +13,9 @@ module Super8
     # :reek:BooleanParameter
     def columns(as_ary=false) # rubocop:disable Style/OptionalBooleanParameter
       result = @real_statement.columns(as_ary)
-      @cassette.record(:columns, connection_id: @connection_id, statement_id: @statement_id, as_ary: as_ary, result: result)
+      @cassette.record(:columns,
+                       connection_id: @connection_id, statement_id: @statement_id,
+                       as_ary: as_ary, result: result)
       result
     end
 
@@ -22,7 +24,9 @@ module Super8
       result = @real_statement.fetch_all
       # Normalize nil to empty array to match CSV playback behavior
       normalized_result = result || []
-      @cassette.record(:fetch_all, connection_id: @connection_id, statement_id: @statement_id, rows_data: normalized_result)
+      @cassette.record(:fetch_all,
+                       connection_id: @connection_id, statement_id: @statement_id,
+                       rows_data: normalized_result)
       result
     end
 
@@ -53,8 +57,6 @@ module Super8
       @real_statement.send(method_name, ...)
     end
 
-    # :reek:BooleanParameter
-    # :reek:ManualDispatch
     def respond_to_missing?(method_name, include_private=false)
       @real_statement.respond_to?(method_name, include_private) || super
     end

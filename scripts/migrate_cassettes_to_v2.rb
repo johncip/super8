@@ -11,41 +11,41 @@ require "odbc"
 
 def convert_cassette(cassette_path)
   puts "Converting cassette: #{cassette_path}"
-  
+
   # Load connection.yml
   connection_file = File.join(cassette_path, "connection.yml")
   unless File.exist?(connection_file)
     puts "  No connection.yml found, skipping"
     return
   end
-  
+
   connection_data = YAML.load_file(connection_file)
   dsn = connection_data["dsn"]
-  
+
   # Load commands.yml
   commands_file = File.join(cassette_path, "commands.yml")
   commands = YAML.load_file(commands_file, permitted_classes: [ODBC::Column])
-  
+
   # Create connect command
   connect_command = {
     "method" => "connect",
     "connection_id" => "a",
     "dsn" => dsn
   }
-  
+
   # Convert existing commands
   converted_commands = [connect_command]
-  
+
   commands.each do |cmd|
     # Add connection_id to all commands
     cmd["connection_id"] = "a"
-    
+
     # Convert statement_id from stmt_N to integer
     if cmd["statement_id"]
       stmt_num = cmd["statement_id"].sub("stmt_", "").to_i + 1
       cmd["statement_id"] = stmt_num
     end
-    
+
     # Rename rows_file references
     if cmd["rows_file"]
       old_file = cmd["rows_file"]
@@ -53,7 +53,7 @@ def convert_cassette(cassette_path)
       stmt_id = cmd["statement_id"]
       new_file = "a_#{stmt_id}_#{method}.csv"
       cmd["rows_file"] = new_file
-      
+
       # Rename actual file
       old_path = File.join(cassette_path, old_file)
       new_path = File.join(cassette_path, new_file)
@@ -62,25 +62,25 @@ def convert_cassette(cassette_path)
         puts "  Renamed: #{old_file} -> #{new_file}"
       end
     end
-    
+
     converted_commands << cmd
   end
-  
+
   # Write updated commands.yml
   File.write(commands_file, converted_commands.to_yaml)
   puts "  Updated commands.yml"
-  
+
   # Delete connection.yml
   FileUtils.rm(connection_file)
   puts "  Deleted connection.yml"
-  
+
   puts "  ✓ Conversion complete"
 end
 
 # Main script
 if ARGV.empty?
-  puts "Usage: #{$0} <cassettes_directory>"
-  puts "Example: #{$0} spec/super8_cassettes"
+  puts "Usage: #{$PROGRAM_NAME} <cassettes_directory>"
+  puts "Example: #{$PROGRAM_NAME} spec/super8_cassettes"
   exit 1
 end
 

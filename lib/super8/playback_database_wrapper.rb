@@ -9,7 +9,8 @@ module Super8
 
     def run(sql, *params)
       expected_command = @cassette.next_command
-      validate_command_match(expected_command, :run, connection_id: @connection_id, sql: sql, params: params)
+      validate_command_match(expected_command, :run,
+                             connection_id: @connection_id, sql: sql, params: params)
 
       statement_id = expected_command["statement_id"]
       PlaybackStatementWrapper.new(statement_id, @cassette, @connection_id)
@@ -20,16 +21,12 @@ module Super8
       raise NoMethodError, "Method #{method_name} not implemented for playback"
     end
 
-    # :reek:BooleanParameter
-    # :reek:ManualDispatch
     def respond_to_missing?(_method_name, _include_private=false)
       false
     end
 
     private
 
-    # :reek:NilCheck
-    # :reek:FeatureEnvy
     def validate_command_match(expected_command, method, **actual_context)
       raise CommandMismatchError, "No more recorded interactions" if expected_command.nil?
 

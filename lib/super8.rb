@@ -22,9 +22,6 @@ module Super8
     # Wraps a block with cassette recording/playback.
     # In record mode, ODBC calls are captured and saved.
     # In playback mode, recorded responses are returned.
-    #
-    # :reek:TooManyStatements
-    # :reek:NestedIterators
     def use_cassette(name, mode: :record)
       cassette = Cassette.new(name)
 
@@ -45,7 +42,6 @@ module Super8
 
     private
 
-    # :reek:NestedIterators
     def setup_recording_mode(cassette)
       original_connect = ODBC.method(:connect)
       @original_connect = original_connect
@@ -64,7 +60,6 @@ module Super8
       end
     end
 
-    # :reek:TooManyStatements
     def setup_playback_mode(cassette)
       cassette.load # Load cassette data
 
