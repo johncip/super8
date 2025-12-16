@@ -4,8 +4,6 @@ require "csv"
 module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.
-  #
-  # :reek:MissingSafeMethod
   class Cassette
     attr_reader :name
 
@@ -71,14 +69,11 @@ module Super8
 
     private
 
-    # :reek:UtilityFunction
     def stringify_keys(hash)
       hash.transform_keys(&:to_s)
     end
 
     # Extracts row data from commands, writes to CSV files, replaces with file references
-    #
-    # :reek:FeatureEnvy
     def process_row_data!
       @commands.each do |command|
         next unless command.key?("rows_data")

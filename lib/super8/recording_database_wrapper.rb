@@ -12,7 +12,8 @@ module Super8
     # Intercept run method to record SQL queries
     def run(sql, *params)
       statement_id = next_statement_id
-      @cassette.record(:run, connection_id: @connection_id, sql: sql, params: params, statement_id: statement_id)
+      @cassette.record(:run, connection_id: @connection_id,
+                       sql: sql, params: params, statement_id: statement_id)
       real_statement = @real_db.run(sql, *params)
       RecordingStatementWrapper.new(real_statement, statement_id, @cassette, @connection_id)
     end
@@ -22,8 +23,6 @@ module Super8
       @real_db.send(method_name, ...)
     end
 
-    # :reek:BooleanParameter
-    # :reek:ManualDispatch
     def respond_to_missing?(method_name, include_private=false)
       @real_db.respond_to?(method_name, include_private) || super
     end

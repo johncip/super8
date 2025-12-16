@@ -29,7 +29,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       commands_file = File.join(cassette_path, "commands.yml")
       commands = YAML.load_file(commands_file)
       connect_command = commands.first
-      
+
       aggregate_failures do
         expect(connect_command["method"]).to eq("connect")
         expect(connect_command["connection_id"]).to eq("a")
@@ -37,7 +37,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       end
     end
 
-    it "restores original ODBC.connect after use_cassette block" do # rubocop:disable RSpec/ExampleLength
+    it "restores original ODBC.connect after use_cassette block" do
       method_during_block = nil
 
       Super8.use_cassette(cassette_name) do
@@ -297,8 +297,8 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
     end
 
     describe "multiple fetch_all calls with sequential file naming" do
-      let(:row_data1) { [["001", "Alice"]] } # rubocop:disable RSpec/IndexedLet
-      let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] } # rubocop:disable RSpec/IndexedLet
+      let(:row_data1) { [["001", "Alice"]] }
+      let(:row_data2) { [["002", "Bob"], ["003", "Charlie"]] }
 
       before do
         fake_statement1 = instance_double(ODBC::Statement)
@@ -464,7 +464,7 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       allow(fake_stmt2).to receive(:fetch_all).and_return([["conn2_data"]])
     end
 
-    it "assigns different connection IDs to each connection" do # rubocop:disable RSpec/ExampleLength
+    it "assigns different connection IDs to each connection" do
       Super8.use_cassette(cassette_name) do
         ODBC.connect("dsn_one") do |db1|
           db1.run("SELECT * FROM table1")
@@ -496,14 +496,18 @@ RSpec.describe "ODBC interception" do # rubocop:disable RSpec/DescribeClass
       run_commands = commands.select { |cmd| cmd["method"] == "run" }
 
       # Connection a has statements 1 and 2
-      expect(run_commands[0]["connection_id"]).to eq("a")
-      expect(run_commands[0]["statement_id"]).to eq(1)
-      expect(run_commands[1]["connection_id"]).to eq("a")
-      expect(run_commands[1]["statement_id"]).to eq(2)
+      aggregate_failures do
+        expect(run_commands[0]["connection_id"]).to eq("a")
+        expect(run_commands[0]["statement_id"]).to eq(1)
+        expect(run_commands[1]["connection_id"]).to eq("a")
+        expect(run_commands[1]["statement_id"]).to eq(2)
+      end
 
       # Connection b has statement 1 (independent namespace)
-      expect(run_commands[2]["connection_id"]).to eq("b")
-      expect(run_commands[2]["statement_id"]).to eq(1)
+      aggregate_failures do
+        expect(run_commands[2]["connection_id"]).to eq("b")
+        expect(run_commands[2]["statement_id"]).to eq(1)
+      end
     end
 
     it "uses connection-specific file names" do # rubocop:disable RSpec/ExampleLength
