@@ -41,6 +41,12 @@ RSpec.describe Super8::Cassette do
       cassette.save
       expect(Dir.exist?("deep/nested/cassettes/test")).to be true
     end
+
+    it "creates metadata.yml" do
+      cassette = described_class.new("test_metadata")
+      cassette.save
+      expect(File.exist?("#{cassette_dir}/test_metadata/metadata.yml")).to be true
+    end
   end
 
   describe "#load" do
@@ -52,11 +58,19 @@ RSpec.describe Super8::Cassette do
       )
     end
 
-    it "succeeds when cassette exists" do
-      FileUtils.mkdir_p("#{cassette_dir}/existing")
-      File.write("#{cassette_dir}/existing/commands.yml", [].to_yaml)
-      cassette = described_class.new("existing")
-      expect { cassette.load }.not_to raise_error
+    it "loads cassettes and allows playback" do
+      FileUtils.mkdir_p("#{cassette_dir}/test_cassette")
+      commands = [
+        {"method" => "connect", "connection_id" => "a", "dsn" => "test"},
+        {"method" => "run", "connection_id" => "a", "statement_id" => 1}
+      ]
+      File.write("#{cassette_dir}/test_cassette/commands.yml", commands.to_yaml)
+      
+      cassette = described_class.new("test_cassette")
+      cassette.load
+      
+      expect(cassette.next_command["method"]).to eq("connect")
+      expect(cassette.next_command["method"]).to eq("run")
     end
   end
 end
