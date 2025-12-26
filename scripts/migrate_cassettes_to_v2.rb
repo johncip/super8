@@ -91,8 +91,8 @@ unless Dir.exist?(cassettes_dir)
   exit 1
 end
 
-# Find all cassette subdirectories (ones with commands.yml)
-cassette_paths = Dir.glob(File.join(cassettes_dir, "*")).select do |path|
+# Find all cassette subdirectories (ones with commands.yml), searching recursively
+cassette_paths = Dir.glob(File.join(cassettes_dir, "**", "*")).select do |path|
   Dir.exist?(path) && File.exist?(File.join(path, "commands.yml"))
 end
 
