@@ -106,7 +106,7 @@ module Super8
       metadata = {
         "schema_version" => SCHEMA_VERSION,
         "recorded_with" => Super8::VERSION,
-        "recorded_on" => Time.now.utc.iso8601
+        "recorded_on" => Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
       }
       File.write(metadata_file, metadata.to_yaml)
     end
