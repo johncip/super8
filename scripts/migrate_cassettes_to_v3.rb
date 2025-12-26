@@ -33,7 +33,7 @@ def convert_cassette(cassette_path)
   metadata = {
     "schema_version" => 3,
     "migrated_with" => "migrate_cassettes_to_v3.rb",
-    "recorded_on" => Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    "migrated_on" => Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
   }
   File.write(metadata_file, metadata.to_yaml)
   puts "  ✓ Created metadata.yml with schema_version: 3"
