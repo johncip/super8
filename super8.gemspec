@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
 
   # Runtime dependencies
   spec.add_dependency "ruby-odbc"
+  spec.add_dependency "csv"
 
   # Development dependencies
   spec.add_development_dependency "fakefs"
