@@ -5,6 +5,8 @@ module Super8
   # Represents a recorded cassette stored on disk.
   # Each cassette is a directory containing commands and row data.
   class Cassette
+    SCHEMA_VERSION = 3
+
     attr_reader :name
 
     def initialize(name)
@@ -31,10 +33,11 @@ module Super8
     end
 
     # Writes all cassette data to disk in one pass.
-    # Creates directory, row files, and commands.yml.
+    # Creates directory, row files, commands.yml, and metadata.yml.
     def save
       FileUtils.mkdir_p(path)
       process_row_data!
+      save_metadata_file
       save_commands_file
     end
 
@@ -96,6 +99,16 @@ module Super8
           end
         end
       end
+    end
+
+    def save_metadata_file
+      metadata_file = File.join(path, "metadata.yml")
+      metadata = {
+        "schema_version" => SCHEMA_VERSION,
+        "recorded_with" => Super8::VERSION,
+        "recorded_on" => Time.now.utc.iso8601
+      }
+      File.write(metadata_file, metadata.to_yaml)
     end
 
     def save_commands_file
