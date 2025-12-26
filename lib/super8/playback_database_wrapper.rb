@@ -1,3 +1,5 @@
+require_relative "diff_helper"
+
 module Super8
   # Wraps ODBC calls during playback mode.
   # Validates that interactions match recorded commands and returns recorded data.
@@ -39,10 +41,16 @@ module Super8
       # Check each key/value pair
       actual_context.each do |key, value|
         expected_value = expected_command[key.to_s]
-        if expected_value != value
-          raise CommandMismatchError,
-                "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
-        end
+        next if expected_value == value
+
+        # Use diff for SQL queries to show detailed differences
+        error_message = if key == :sql && expected_value.is_a?(String) && value.is_a?(String)
+                          DiffHelper.generate_diff(expected_value, value, key: "sql")
+                        else
+                          "#{key}: expected #{expected_value.inspect}, got #{value.inspect}"
+                        end
+
+        raise CommandMismatchError, error_message
       end
     end
   end
