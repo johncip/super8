@@ -26,12 +26,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Runtime dependencies
-  spec.add_dependency "ruby-odbc"
-  spec.add_dependency "csv"
+  spec.add_dependency "ruby-odbc", "~> 0.99"
+  spec.add_dependency "csv", "~> 3.0"
 
   # Development dependencies
-  spec.add_development_dependency "fakefs"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "diff-lcs"
+  spec.add_development_dependency "fakefs", "~> 2.0"
+  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "diff-lcs", "~> 1.5"
 end
