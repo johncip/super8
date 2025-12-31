@@ -32,13 +32,13 @@ Searched for regex `ODBC\.(connect|Database|Statement)|ruby-odbc` (`**/app/**/*.
 
 Searched for regex `ODBC\.(connect|Database|Statement)` (`**/spec/**/*.rb`), no results
 
-Read [](file:///Users/john/Developer***REMOVED***/app/services/retalix_csv_exporter.rb)
+Read [](file:///PROJECT/app/services/retalix_csv_exporter.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/spec/services/retalix_csv_exporter_spec.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/spec/services/retalix_csv_exporter_spec.rb#1-1), lines 1 to 50
 
 Now I'll create a comprehensive design document based on the VCR patterns and your requirements:
 
-Created [](file:///Users/john/Developer***REMOVED***/docs/odbc_vcr_design.md)
+Created [](file:///PROJECT/docs/odbc_vcr_design.md)
 
 I've created a comprehensive design document at odbc_vcr_design.md.
 

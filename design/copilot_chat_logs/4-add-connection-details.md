@@ -6,9 +6,9 @@ anyway, the point is that I suspect we'll have to store connection info as part 
 
 while doing this, we should redact usernames and passwords from the stored connection info.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/docs/super8_design.md#1-1), lines 1 to 100
+GitHub Copilot: Read [](file:///PROJECT/docs/super8_design.md#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/docs/super8_design.md#100-100), lines 100 to 200
+Read [](file:///PROJECT/docs/super8_design.md#100-100), lines 100 to 200
 
 Using "Replace String in File"
 

@@ -35,7 +35,7 @@ one thing that is not here is the default library, which for our DSN is called P
 
 GitHub Copilot: Good points. Let me investigate where the default library information might be accessible in ruby-odbc. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
+Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
 
 Searched for regex `SQL_CURRENT_SCHEMA|SQL_ATTR_CURRENT_CATALOG|SQL_ATTR_CURRENT_SCHEMA|CURRENT_QUALIFIER|DEFAULT_LIB`, no results
 
@@ -65,7 +65,7 @@ GitHub Copilot: You're right — I was going in circles. The goal is to find whe
 
 Let me write a quick script to probe for that info via ODBC info codes: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && ruby -r odbc -e '
+Ran terminal command: cd /PROJECT && ruby -r odbc -e '
 ODBC.connect("retalix") do |db|
   # Try a range of SQL info codes to find schema/library info
   # Common ones: 39 = SQL_SCHEMA_TERM, 41 = SQL_CATALOG_TERM, 147 = SQL_SCHEMA_USAGE
@@ -107,7 +107,7 @@ end
 
 johncip: let's modify the existing investigation script instead.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 254
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 254
 
 I'll add a section to investigate the default library/schema. Looking at the script structure, I'll add it after section 1 (connection scope): 
 
@@ -175,7 +175,7 @@ Which approach appeals to you?
 
 johncip: the user shouldn't configure what ends up in the cassette, beyond its name. let's try modifying the investigation script to get it with  SQL_DBMS_NAME, and see if that works.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#118-118), lines 118 to 165
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#118-118), lines 118 to 165
 
 Using "Replace String in File"
 
@@ -368,7 +368,7 @@ Until then, we use what ODBC provides and don't pretend to have more information
 
 johncip: ok. let's document that with a couple of sentences in the investigation script.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#115-115), lines 115 to 145
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#115-115), lines 115 to 145
 
 Using "Replace String in File"
 
@@ -422,7 +422,7 @@ Should I update the design doc with this, or is there more to discuss first?
 
 johncip: what I'd like to do is create a separate schema doc that has the schemas for the file types that we need to store, with short justifications summarizing the things we've talked about.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/design/cassette_schema.md)
 
 Created cassette_schema.md with schemas for:
 

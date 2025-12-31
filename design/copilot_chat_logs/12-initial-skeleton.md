@@ -2,23 +2,23 @@ johncip: i'd like to continue with the implementation plan, by creating the cass
 
 GitHub Copilot: Looking at the implementation plan and design documents, I'll create the Cassette class skeleton with basic specs. Let me first check what already exists in the super8 directory. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
 Searched for files matching `**/spec/super8/**/*.rb`, 1 match
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib)
+Read [](file:///PROJECT/lib/super8/lib)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/config_spec.rb)
+Read [](file:///PROJECT/lib/super8/spec/super8/config_spec.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8)
+Read [](file:///PROJECT/lib/super8/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/config.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/config.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec)
+Read [](file:///PROJECT/lib/super8/spec)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/spec_helper.rb)
+Read [](file:///PROJECT/lib/super8/spec/spec_helper.rb)
 
 Now I have a good understanding of the existing structure. Based on the design documents, I'll create:
 
@@ -54,13 +54,13 @@ Does this scope sound right?
 
 johncip: yes. and if the specs added would benefit from fakefs, then use it and add it to dependencies.md.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/dependencies.md)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/dependencies.md)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Created [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/errors.rb)
+Created [](file:///PROJECT/lib/super8/lib/super8/errors.rb)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/cassette_spec.rb)
+Created [](file:///PROJECT/lib/super8/spec/super8/cassette_spec.rb)
 
 Now I'll update super8.rb to require the new files and update dependencies.md: 
 
@@ -76,7 +76,7 @@ Using "Multi-Replace String in Files"
 ```
 Let me run the specs to make sure they pass: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED***/lib/super8 && bundle exec rspec spec/super8/cassette_spec.rb --format documentation
+Ran terminal command: cd /PROJECT/lib/super8 && bundle exec rspec spec/super8/cassette_spec.rb --format documentation
 
 All specs pass. Now I'll update the implementation plan to mark the task complete: 
 

@@ -10,19 +10,19 @@ do what research is necessary, then present me with a plan or sketch.
 
 GitHub Copilot: I'll research the existing design docs and current code to understand the Super8 project structure and requirements for intercepting `ODBC.connect(dsn)` calls. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+Read [](file:///PROJECT/lib/super8/design)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/api_support.md#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/cassette_schema.md#1-1), lines 1 to 50
 
 Searched codebase for "Super8 current implementation existing code", 18 results
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
 Searched codebase for "RetalixFetcher ODBC.connect usage current codebase", 23 results
 
@@ -88,7 +88,7 @@ Would you like me to proceed with implementing this interceptor? The approach pr
 
 johncip: show me what you had in mind for connection.rb.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/connection.rb)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/lib/super8/connection.rb)
 
 This is a minimal `Connection` class that:
 
@@ -208,7 +208,7 @@ For a spike focused on "usable but brief," the direct approach aligns much bette
 
 johncip: try to complete the ODBC.connect task. keep it brief, for god's sake.
 
-GitHub Copilot: Ran terminal command: rm /Users/john/Developer***REMOVED***/lib/super8/lib/super8/connection.rb
+GitHub Copilot: Ran terminal command: rm /PROJECT/lib/super8/lib/super8/connection.rb
 
 Using "Replace String in File"
 
@@ -230,11 +230,11 @@ Made changes.
 
 johncip: let's add some basic specs testing the important parts of the behavior (not implementation details)
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb)
 
 Using "Replace String in File"
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/spec_helper.rb)
+Read [](file:///PROJECT/lib/super8/spec/spec_helper.rb)
 
 Using "Replace String in File"
 
@@ -273,7 +273,7 @@ Made changes.
 
 johncip: let's try running the specs
 
-GitHub Copilot: Ran terminal command: cd /Users/john/Developer***REMOVED***/lib/super8 && bundle exec rspec
+GitHub Copilot: Ran terminal command: cd /PROJECT/lib/super8 && bundle exec rspec
 
 The specs are failing because we're actually calling the real ODBC.connect which tries to connect to real databases. We need to mock ODBC.connect completely for our tests: 
 
@@ -402,7 +402,7 @@ Perfect! All specs are passing. The ODBC.connect interception is working correct
 
 johncip: the specs have some empty blocks & unused block variables.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb)
 
 Using "Replace String in File"
 
@@ -416,7 +416,7 @@ Made changes.
 
 johncip: what would it look like to use verifying doubles in the interception specs?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb)
 
 With verifying doubles, we'd replace the basic `double("db")` with an `instance_double` that enforces the interface of a real ODBC database object:
 
@@ -544,7 +544,7 @@ johncip: make a very brief ADR justifying not supporting multiple concurrent thr
 
 GitHub Copilot: Summarized conversation historyI'll create a brief ADR documenting the decision not to support multiple concurrent threads in Super8. 
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/docs/adr-001-no-concurrent-threads.md)
+Created [](file:///PROJECT/lib/super8/docs/adr-001-no-concurrent-threads.md)
 
 Created ADR-001 documenting the decision to avoid thread concurrency complexity. The ADR explains that global method replacement makes thread safety impractical, but process-based parallelism remains viable.
 
@@ -552,7 +552,7 @@ Made changes.
 
 johncip: it should go in design, and it should be adr 003.
 
-GitHub Copilot: Ran terminal command: mv /Users/john/Developer***REMOVED***/lib/super8/docs/adr-001-no-concurrent-threads.md /Users/john/Developer***REMOVED***/lib/super8/design/adr-003-no-concurrent-threads.md
+GitHub Copilot: Ran terminal command: mv /PROJECT/lib/super8/docs/adr-001-no-concurrent-threads.md /PROJECT/lib/super8/design/adr-003-no-concurrent-threads.md
 
 Using "Replace String in File"
 
@@ -566,9 +566,9 @@ Made changes.
 
 johncip: the file name scheme should match the others
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design)
 
-Ran terminal command: mv /Users/john/Developer***REMOVED***/lib/super8/design/adr-003-no-concurrent-threads.md /Users/john/Developer***REMOVED***/lib/super8/design/adr_003_no_concurrent_threads.md
+Ran terminal command: mv /PROJECT/lib/super8/design/adr-003-no-concurrent-threads.md /PROJECT/lib/super8/design/adr_003_no_concurrent_threads.md
 
 Using "Replace String in File"
 
@@ -610,9 +610,9 @@ johncip: add a TODO comment somewhere to handle storing the user name in the cas
 
 GitHub Copilot: I'll add a TODO comment to handle storing the username when it's passed to ODBC.connect. Let me check the current implementation first. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb#1-1), lines 1 to 30
+Read [](file:///PROJECT/lib/super8/lib/super8.rb#1-1), lines 1 to 30
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb#25-25), lines 25 to 35
+Read [](file:///PROJECT/lib/super8/lib/super8.rb#25-25), lines 25 to 35
 
 Using "Replace String in File"
 

@@ -35,7 +35,7 @@ one thing that is not here is the default library, which for our DSN is called P
 
 GitHub Copilot: Good points. Let me investigate where the default library information might be accessible in ruby-odbc. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
+Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
 
 Searched for regex `SQL_CURRENT_SCHEMA|SQL_ATTR_CURRENT_CATALOG|SQL_ATTR_CURRENT_SCHEMA|CURRENT_QUALIFIER|DEFAULT_LIB`, no results
 
@@ -65,7 +65,7 @@ GitHub Copilot: You're right — I was going in circles. The goal is to find whe
 
 Let me write a quick script to probe for that info via ODBC info codes: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && ruby -r odbc -e '
+Ran terminal command: cd /PROJECT && ruby -r odbc -e '
 ODBC.connect("retalix") do |db|
   # Try a range of SQL info codes to find schema/library info
   # Common ones: 39 = SQL_SCHEMA_TERM, 41 = SQL_CATALOG_TERM, 147 = SQL_SCHEMA_USAGE
@@ -107,7 +107,7 @@ end
 
 johncip: let's modify the existing investigation script instead.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 254
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 254
 
 I'll add a section to investigate the default library/schema. Looking at the script structure, I'll add it after section 1 (connection scope): 
 
@@ -175,7 +175,7 @@ Which approach appeals to you?
 
 johncip: the user shouldn't configure what ends up in the cassette, beyond its name. let's try modifying the investigation script to get it with  SQL_DBMS_NAME, and see if that works.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#118-118), lines 118 to 165
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#118-118), lines 118 to 165
 
 Using "Replace String in File"
 
@@ -368,7 +368,7 @@ Until then, we use what ODBC provides and don't pretend to have more information
 
 johncip: ok. let's document that with a couple of sentences in the investigation script.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#115-115), lines 115 to 145
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#115-115), lines 115 to 145
 
 Using "Replace String in File"
 
@@ -422,7 +422,7 @@ Should I update the design doc with this, or is there more to discuss first?
 
 johncip: what I'd like to do is create a separate schema doc that has the schemas for the file types that we need to store, with short justifications summarizing the things we've talked about.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/design/cassette_schema.md)
 
 Created cassette_schema.md with schemas for:
 
@@ -467,13 +467,13 @@ Which would you like to start with? The Cassette class is a reasonable foundatio
 
 johncip: before we proceed -- I don't think handling of prepared statements is low-priority, and I don't think our earlier testing dealt with them at all. let's add that to the design doc as one of the priorities, and under phase 2 as a "core feature"
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#1-1), lines 1 to 100
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/design_document.md#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#100-100), lines 100 to 200
+Read [](file:///PROJECT/lib/super8/design/design_document.md#100-100), lines 100 to 200
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#200-200), lines 200 to 300
+Read [](file:///PROJECT/lib/super8/design/design_document.md#200-200), lines 200 to 300
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#300-300), lines 300 to 404
+Read [](file:///PROJECT/lib/super8/design/design_document.md#300-300), lines 300 to 404
 
 Now I can see the structure. I need to:
 1. Add prepared statements to Priority 1 investigation tasks
@@ -513,11 +513,11 @@ Searched larskanis/ruby-odbc for "prepare execute statement parameters bind para
 
 I found the key documentation. Let me now read the current "Methods to Intercept" section and update it along with adding a new prepared statements section: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#118-118), lines 118 to 150
+Read [](file:///PROJECT/lib/super8/design/design_document.md#118-118), lines 118 to 150
 
 Now let me find the Priority 1 section I just added and update the methods to intercept section to add prepared statement info: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#300-300), lines 300 to 330
+Read [](file:///PROJECT/lib/super8/design/design_document.md#300-300), lines 300 to 330
 
 Using "Replace String in File"
 
@@ -575,7 +575,7 @@ in the course of this project it should be simple enough for us to generate equi
 
 my point is that there's information in the design doc now that is a little premature. I just want to make a note about what's available that might need to be intercepted, without saying definitely what and when we're going to intercept.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#124-124), lines 124 to 160
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/design_document.md#124-124), lines 124 to 160
 
 Using "Replace String in File"
 
@@ -585,7 +585,7 @@ Using "Replace String in File"
 ```
 Now let me also simplify the Priority 1 section: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#310-310), lines 310 to 340
+Read [](file:///PROJECT/lib/super8/design/design_document.md#310-310), lines 310 to 340
 
 Using "Replace String in File"
 
@@ -601,7 +601,7 @@ johncip: the prepared statements section should come at least after the column m
 
 let's add a todo item after "investigation script" to create a second script to investigate capturing prepared statements.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#310-310), lines 310 to 422
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/design_document.md#310-310), lines 310 to 422
 
 Using "Replace String in File"
 

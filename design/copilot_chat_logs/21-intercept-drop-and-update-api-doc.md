@@ -2,13 +2,13 @@ User: what's the very next task for the Super 8 project (under lib/super8, desig
 
 GitHub Copilot: I'll look at the Super 8 project structure and design documents to identify the next task. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+Read [](file:///PROJECT/lib/super8/design)
 
 Let me check the implementation plan which likely contains the task list with checked/unchecked items: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
 Based on the implementation plan, the very next task is:
 
@@ -18,23 +18,23 @@ This is the first unchecked item in Phase 1 (Record Mode). The project is curren
 
 User: ok, show me a sketch of what intercepting drop will look like.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/lib)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8)
+Read [](file:///PROJECT/lib/super8/lib/super8)
 
 Let me look at the existing interception patterns: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/lib/super8.rb#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/statement_wrapper.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/statement_wrapper.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb#80-80), lines 80 to 134
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb#80-80), lines 80 to 134
 
 Now let me look at some of the methods that record commands: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb#50-50), lines 50 to 80
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb#50-50), lines 50 to 80
 
 Based on the existing patterns in the Super8 codebase, here's a sketch of what intercepting `Statement#drop` would look like:
 
@@ -134,7 +134,7 @@ Fetched http://www.ch-werner.de/rubyodbc/odbc.html
 
 Let me try a different approach and create a simple test script to check the return value directly: 
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_drop_return_value.rb)
+Created [](file:///PROJECT/lib/super8/scripts/investigate_drop_return_value.rb)
 
 Ran terminal command: bundle exec ruby lib/super8/scripts/investigate_drop_return_value.rb
 
@@ -228,17 +228,17 @@ Made changes.
 
 User: sketch out a simple spec. check the behavior, not the implementation.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/spec)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#100-100), lines 100 to 150
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#100-100), lines 100 to 150
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#200-200), lines 200 to 250
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#200-200), lines 200 to 250
 
 Now let me add a spec for Statement#drop. I'll add it to the existing file following the same pattern: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#300-300), lines 300 to 328
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#300-300), lines 300 to 328
 
 Using "Replace String in File"
 
@@ -395,9 +395,9 @@ Made changes.
 
 User: update the status column in api_support.md. also, don't use emojis.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#15-15), lines 15 to 35
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/api_support.md#15-15), lines 15 to 35
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#85-85), lines 85 to 101
+Read [](file:///PROJECT/lib/super8/design/api_support.md#85-85), lines 85 to 101
 
 Using "Replace String in File"
 
@@ -419,7 +419,7 @@ GitHub Copilot: Using "Multi-Replace String in Files"
 ```
 Let me read more of the file to see the exact structure: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#30-30), lines 30 to 70
+Read [](file:///PROJECT/lib/super8/design/api_support.md#30-30), lines 30 to 70
 
 Using "Multi-Replace String in Files"
 
@@ -431,11 +431,11 @@ Let me find the Phase 4 section:
 
 Searched for text `Phase 4` (`**/lib/super8/design/api_support.md`), 1 result
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#70-70), lines 70 to 90
+Read [](file:///PROJECT/lib/super8/design/api_support.md#70-70), lines 70 to 90
 
 Good! It looks like the Phase 4 section was already updated. Let me check the status key section: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#90-90), lines 90 to 101
+Read [](file:///PROJECT/lib/super8/design/api_support.md#90-90), lines 90 to 101
 
 Perfect! It looks like most of the emoji replacements worked. The file now uses markdown checkboxes `[ ]` and `[x]` instead of unicode emoji glyphs. The status has been properly updated to show Statement#drop as `[x] Done`.
 
@@ -457,9 +457,9 @@ User: ensure that the Statement methods cancel, close, drop, column, fetch, fetc
 
 don't change the sections. just add methods where they need to go. don't add methods to the "MVP" section unless they're actually used by RetalixFetcher.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#20-20), lines 20 to 40
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/api_support.md#20-20), lines 20 to 40
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md#70-70), lines 70 to 85
+Read [](file:///PROJECT/lib/super8/design/api_support.md#70-70), lines 70 to 85
 
 Now I need to add the missing methods. Looking at what's already there vs what the user wants:
 

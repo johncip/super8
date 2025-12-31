@@ -135,7 +135,7 @@ johncip: it's reasonable if we know that there will always be something analagou
 
 GitHub Copilot: Let me check if there's a way to get results in a single call: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && bundle exec ruby -e "
+Ran terminal command: cd /PROJECT && bundle exec ruby -e "
 require_relative 'config/environment'
 require 'odbc'
 
@@ -201,7 +201,7 @@ end  # disconnect happens here automatically
 
 But you're right to call it out. Let me verify that's actually happening: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && bundle exec ruby -e "
+Ran terminal command: cd /PROJECT && bundle exec ruby -e "
 require_relative 'config/environment'
 require 'odbc'
 
@@ -227,9 +227,9 @@ also, I'm not sure that we need to update the original design doc, but is there 
 
 GitHub Copilot: Summarized conversation historyI'll update both documents and check the design doc for contradictions. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md)
+Read [](file:///PROJECT/lib/super8/design/api_support.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md)
+Read [](file:///PROJECT/lib/super8/design/cassette_schema.md)
 
 Now I'll update both documents to reflect the command log approach and incremental fetch support. Let me also check for contradictions in the design doc.
 
@@ -287,7 +287,7 @@ Made changes.
 
 johncip: let's make it clearer that the example spec/super8_cassettes is just an example and might change as new information is uncovered.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#45-45), lines 45 to 80
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/design_document.md#45-45), lines 45 to 80
 
 Using "Replace String in File"
 
@@ -345,15 +345,15 @@ let's also put the implementation phases in its own document. there should be a 
 
 both the investigations and implementation docs we will treat more as living documents, so that we can keep the design document more or less static.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#280-280), lines 280 to 428
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/design_document.md#280-280), lines 280 to 428
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md)
+Created [](file:///PROJECT/lib/super8/design/investigations.md)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Created [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
 Now I'll remove the Investigation Tasks and Implementation Phases sections from the design document: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#260-260), lines 260 to 320
+Read [](file:///PROJECT/lib/super8/design/design_document.md#260-260), lines 260 to 320
 
 Using "Replace String in File"
 
@@ -363,9 +363,9 @@ Using "Replace String in File"
 ```
 Now remove the Investigation Tasks section content that remains: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#290-290), lines 290 to 370
+Read [](file:///PROJECT/lib/super8/design/design_document.md#290-290), lines 290 to 370
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#365-365), lines 365 to 401
+Read [](file:///PROJECT/lib/super8/design/design_document.md#365-365), lines 365 to 401
 
 Using "Replace String in File"
 
@@ -398,7 +398,7 @@ Made changes.
 
 johncip: are you sure that the investigations document has all of the answers to everything? I feel like we discovered a lot with the initial script. want to re-run it and make sure we're not missing anything?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
 
 Ran terminal command: bundle exec ruby lib/super8/scripts/investigate_ruby_odbc.rb 2>&1
 
@@ -423,7 +423,7 @@ Good call. There are several things from this output not captured in `investigat
 
 Let me update the investigations doc: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md)
+Read [](file:///PROJECT/lib/super8/design/investigations.md)
 
 Using "Replace String in File"
 
@@ -446,7 +446,7 @@ johncip: we may not want to make extra calls, e.g. to get_info. it's good to kno
 
 GitHub Copilot: Good point. The connection scope info is available *if we want it*, but we shouldn't make extra calls during recording. Let me update the investigations doc to reflect this. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md#20-20), lines 20 to 50
+Read [](file:///PROJECT/lib/super8/design/investigations.md#20-20), lines 20 to 50
 
 Using "Replace String in File"
 
@@ -482,7 +482,7 @@ You're right. The original had details that aren't in the investigations doc:
 
 Let me add these: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md#130-130), lines 130 to 170
+Read [](file:///PROJECT/lib/super8/design/investigations.md#130-130), lines 130 to 170
 
 Using "Replace String in File"
 
@@ -492,7 +492,7 @@ Using "Replace String in File"
 ```
 Now let me also add the statement lifecycle that was in the original: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md#70-70), lines 70 to 100
+Read [](file:///PROJECT/lib/super8/design/investigations.md#70-70), lines 70 to 100
 
 Using "Replace String in File"
 
@@ -514,13 +514,13 @@ johncip: ok. given the goals I had in mind for splitting the design document int
 
 GitHub Copilot: Let me review all the docs to check for overlap, gaps, or misplaced content. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#1-1), lines 1 to 150
+Read [](file:///PROJECT/lib/super8/design/design_document.md#1-1), lines 1 to 150
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+Read [](file:///PROJECT/lib/super8/design)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#150-150), lines 150 to 309
+Read [](file:///PROJECT/lib/super8/design/design_document.md#150-150), lines 150 to 309
 
 Here's my assessment:
 
@@ -558,7 +558,7 @@ johncip: - architecture section -- leave it there for now but add a note that it
 
 GitHub Copilot: Let me check what's after line 65 in the File Format section: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#65-65), lines 65 to 110
+Read [](file:///PROJECT/lib/super8/design/design_document.md#65-65), lines 65 to 110
 
 **Assessment of lines 65-110:**
 
@@ -590,7 +590,7 @@ Made changes.
 
 johncip: based on what you've seen of the ruby-odbc API, do you think that the new cassette schema description is sufficiently general to handle multiple queries per connection?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md#1-1), lines 1 to 120
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/cassette_schema.md#1-1), lines 1 to 120
 
 Yes, the schema handles multiple queries per connection well. The command log with `statement_id` tracking allows:
 
@@ -676,11 +676,11 @@ Made changes.
 
 johncip: why in our example, in the cassette schema, did the rows lose their timestamp column?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
 Let me check the cassette schema document: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md)
+Read [](file:///PROJECT/lib/super8/design/cassette_schema.md)
 
 The cassette schema shows that the CSV files (`rows_N.csv`) do **not** have a header row. Looking at the example:
 

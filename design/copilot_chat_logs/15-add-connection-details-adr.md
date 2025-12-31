@@ -6,13 +6,13 @@ ultimately I want to not gather extra connection details using get_info, because
 
 GitHub Copilot: I'll help you create an ADR documenting the decision about connection details and the investigation findings. Let me first explore the super8 project structure and existing design documents to understand the context better. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+Read [](file:///PROJECT/lib/super8/design)
 
 Now let me look at the existing ADR to understand the format and context: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_001_single_connection_per_cassette.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/adr_001_single_connection_per_cassette.md#1-1), lines 1 to 50
 
 Let me check if there are any investigation scripts or chat logs that mention connection details: 
 
@@ -20,21 +20,21 @@ Searched codebase for "investigation script connection details get_info", 30 res
 
 Let me check for the chat logs to understand more about the connection details investigation: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs)
+Read [](file:///PROJECT/lib/super8/design/copilot_chat_logs)
 
 Let me check the specific chat logs about connection details: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs/4-add-connection-details.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/copilot_chat_logs/4-add-connection-details.md#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs/5-more-connection-details-and-create-script.md#1-1), lines 1 to 120
+Read [](file:///PROJECT/lib/super8/design/copilot_chat_logs/5-more-connection-details-and-create-script.md#1-1), lines 1 to 120
 
 Now let me check the investigation scripts: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts)
+Read [](file:///PROJECT/lib/super8/scripts)
 
 Let me look at the investigation scripts to understand the findings: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 50
 
 Let me also check the chat logs about what was learned: 
 
@@ -42,15 +42,15 @@ Searched for regex `get_info|connection details|gather extra|violates expectatio
 
 Let me read the investigations document to understand what was discovered: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md#20-20), lines 20 to 50
+Read [](file:///PROJECT/lib/super8/design/investigations.md#20-20), lines 20 to 50
 
 Now let me check what the current implementation plan says about connection details: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md#1-1), lines 1 to 50
 
 Now I have enough context. Based on the design documents and chat logs, I can see that the investigation revealed that `get_info` sends requests to the server, which violates expectations for a library like Super8. Let me create an ADR documenting this decision. 
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md)
+Created [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md)
 
 I've created ADR 002 that documents the decision to avoid gathering extra connection details using `get_info()`. The ADR covers:
 
@@ -155,7 +155,7 @@ Made changes.
 
 johncip: what's this about user-controlled timing and error handling?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#70-70), lines 70 to 90
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#70-70), lines 70 to 90
 
 You're right to question that - "user-controlled timing and error handling" is vague and doesn't really make sense in this context. If we're just gathering metadata during recording, there's no special timing control needed. Let me remove that unnecessary detail: 
 
@@ -242,7 +242,7 @@ johncip: i've made some tweaks.
 
 regarding the future considerations section -- as a weaker version of the opt-in feature, we could just encourage users to add the get_info commands themselves.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#75-75), lines 75 to 95
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#75-75), lines 75 to 95
 
 Using "Replace String in File"
 
@@ -272,7 +272,7 @@ johncip: the document overall feels very salesy
 
 GitHub Copilot: You're right - the tone is overly promotional with lots of checkmarks and "✅" symbols. Let me check the current content and tone it down: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#55-55), lines 55 to 70
+Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#55-55), lines 55 to 70
 
 Using "Replace String in File"
 
@@ -350,7 +350,7 @@ Using "Replace String in File"
 
 Using "Replace String in File"
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#90-90), lines 90 to 105
+Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#90-90), lines 90 to 105
 
 It looks like some of the text may have been edited out. The remaining "Super8" references are in the code example and file paths, which should stay as "Super8" since those are actual code/file references.
 
@@ -374,9 +374,9 @@ Made changes.
 
 johncip: "only record the DSN argument" is incorrect. fix the summary and update the document in a way where that conclusion can't be incorrectly drawn.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#1-1), lines 1 to 20
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#1-1), lines 1 to 20
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_002_avoid_extra_connection_details.md#50-50), lines 50 to 65
+Read [](file:///PROJECT/lib/super8/design/adr_002_avoid_extra_connection_details.md#50-50), lines 50 to 65
 
 I see the issue - the summary and decision text suggests Super 8 will "only record the DSN argument" when it will actually record all the ODBC calls and responses, just not gather extra connection metadata via `get_info()`. 
 

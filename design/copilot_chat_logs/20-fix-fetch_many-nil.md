@@ -179,9 +179,9 @@ Using "Replace String in File"
 
 Let me check the current state of the test file: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#240-240), lines 240 to 260
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#240-240), lines 240 to 260
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#260-260), lines 260 to 280
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#260-260), lines 260 to 280
 
 Using "Replace String in File"
 
@@ -207,9 +207,9 @@ Made changes.
 
 User: make an ADR about the fetch* -> nil issue
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_004_normalize_nil_fetch_results.md)
+Created [](file:///PROJECT/lib/super8/design/adr_004_normalize_nil_fetch_results.md)
 
 Created ADR 004 documenting the decision to normalize `nil` fetch results to empty arrays. This captures the context, alternatives considered, and the rationale for the approach we chose, along with implementation guidance for future fetch methods.
 

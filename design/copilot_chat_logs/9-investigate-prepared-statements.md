@@ -8,13 +8,13 @@ the next step is to make a second investigation script, so that we can figure ou
 
 GitHub Copilot: Looking at the design document, I need to create an investigation script for prepared statements and parameterized queries in ruby-odbc. Let me first check what the existing investigation script looks like to understand the pattern. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
+Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 276
+Read [](file:///PROJECT/lib/super8/scripts/investigate_ruby_odbc.rb#100-100), lines 100 to 276
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts)
+Read [](file:///PROJECT/lib/super8/scripts)
 
 Now let me check the ruby-odbc documentation to understand prepared statements better. 
 
@@ -46,7 +46,7 @@ From the C source code, I can see:
 
 Now I'll create the investigation script: 
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb)
+Created [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb)
 
 Created the investigation script. Want me to run it to see the results? 
 
@@ -161,7 +161,7 @@ Using "Replace String in File"
 ```
 Now let me update the section headings and content to better reflect the actual investigation focus: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#40-40), lines 40 to 130
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#40-40), lines 40 to 130
 
 Using "Replace String in File"
 
@@ -171,9 +171,9 @@ Using "Replace String in File"
 ```
 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#130-130), lines 130 to 200
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#130-130), lines 130 to 200
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#200-200), lines 200 to 280
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#200-200), lines 200 to 280
 
 Using "Replace String in File"
 
@@ -183,7 +183,7 @@ Using "Replace String in File"
 ```
 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#280-280), lines 280 to 350
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#280-280), lines 280 to 350
 
 Now let me remove sections 4 (parameter type handling) and 7 (db.do) which are less relevant, and renumber/update section 6: 
 
@@ -195,7 +195,7 @@ Using "Replace String in File"
 ```
 Now let me remove sections 4 (parameter type handling) and 7 (db.do) which are tangential: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#165-165), lines 165 to 260
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#165-165), lines 165 to 260
 
 I see the duplicate section numbers. Let me fix this by removing the tangential sections and renumbering: 
 
@@ -207,7 +207,7 @@ Using "Replace String in File"
 ```
 Now let me read the end and remove section 7: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb#250-250), lines 250 to 309
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb#250-250), lines 250 to 309
 
 Using "Replace String in File"
 
@@ -217,7 +217,7 @@ Using "Replace String in File"
 ```
 Let me show the final script: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_prepared_statements.rb)
+Read [](file:///PROJECT/lib/super8/scripts/investigate_prepared_statements.rb)
 
 The script is now updated. Key changes:
 
@@ -375,7 +375,7 @@ GitHub Copilot: Looking at the design document and ruby-odbc docs, here's what w
 
 Let me check what methods exist on the Database object: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && bundle exec ruby -e "
+Ran terminal command: cd /PROJECT && bundle exec ruby -e "
 require_relative 'config/environment'
 require 'odbc'
 
@@ -397,7 +397,7 @@ The relevant query execution methods on Database are:
 
 Also `newstmt` creates a blank statement. Let me check what Statement has: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED*** && bundle exec ruby -e "
+Ran terminal command: cd /PROJECT && bundle exec ruby -e "
 require_relative 'config/environment'
 require 'odbc'
 
@@ -479,7 +479,7 @@ Should I update the design document with findings instead?
 
 johncip: let's create a document detailing which of these ways of querying we intend to support now and which we intend to support after getting the mvp working, and treat it as a to-do list that we update over time.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/design/api_support.md)
 
 Created api_support.md with:
 

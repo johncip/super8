@@ -20,7 +20,7 @@ Using "Fetch Web Page"
 
 Fetched http://www.ch-werner.de/rubyodbc/odbc.html
 
-Read [](file:///Users/john/Developer***REMOVED***/app/services/retalix_csv_exporter.rb)
+Read [](file:///PROJECT/app/services/retalix_csv_exporter.rb)
 
 Searched larskanis/ruby-odbc for "ODBC.connect API parameters credentials DSN database statement fetch_all columns data types response", 64 results
 
@@ -32,7 +32,7 @@ Ran terminal command: ls -la /Users/john/.asdf/installs/ruby/3.3.3/lib/ruby/gems
 
 Now let me create a focused script to test ruby-odbc internals with your actual connection: 
 
-Created [](file:///Users/john/Developer***REMOVED***/scripts/investigate_odbc.rb)
+Created [](file:///PROJECT/scripts/investigate_odbc.rb)
 
 Created an investigation script. Based on the GitHub documentation I found, here's what I learned about ruby-odbc that we should document: 
 
@@ -61,7 +61,7 @@ Made changes.
 
 johncip: I want to discuss the connection stuff in more detail, and then we will move on to the script. for now though, move the script to lib/super8/scripts/investigate_odbc.rb
 
-GitHub Copilot: Ran terminal command: mkdir -p /Users/john/Developer***REMOVED***/lib/super8/scripts && mv /Users/john/Developer***REMOVED***/scripts/investigate_odbc.rb /Users/john/Developer***REMOVED***/lib/super8/scripts/investigate_odbc.rb
+GitHub Copilot: Ran terminal command: mkdir -p /PROJECT/lib/super8/scripts && mv /PROJECT/scripts/investigate_odbc.rb /PROJECT/lib/super8/scripts/investigate_odbc.rb
 
 Using "Replace String in File"
 
@@ -101,7 +101,7 @@ Ran terminal command: awk '/^static VALUE$/,/^}$/ { if (/dbc_connect/) found=1; 
 
 Perfect! Now let me check what happens when user/passwd are nil: 
 
-Read [](file:///Users/john/Developer***REMOVED***/docs/super8_design.md#250-250), lines 250 to 280
+Read [](file:///PROJECT/docs/super8_design.md#250-250), lines 250 to 280
 
 Now I understand the connection flow. Let me update the design document with this information: 
 
@@ -155,7 +155,7 @@ If we don't capture this scope, we could have false negatives where:
 
 Let me update the design document to reflect this requirement: 
 
-Read [](file:///Users/john/Developer***REMOVED***/docs/super8_design.md#65-65), lines 65 to 95
+Read [](file:///PROJECT/docs/super8_design.md#65-65), lines 65 to 95
 
 Using "Replace String in File"
 

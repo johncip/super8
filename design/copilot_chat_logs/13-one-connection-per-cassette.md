@@ -2,19 +2,19 @@ johncip: let's look at the next step in the implementation plan. what I'm pictur
 
 GitHub Copilot: Looking at the implementation plan, the next step is to intercept `ODBC.connect(dsn)` (block form). Let me first explore the existing Super8 code to understand the current structure. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib)
+Read [](file:///PROJECT/lib/super8/lib)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8)
+Read [](file:///PROJECT/lib/super8/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/config.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/config.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/errors.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/errors.rb)
 
 Now let me check the cassette_schema.md to refresh on the `connection.yml` format:
 
@@ -93,7 +93,7 @@ GitHub Copilot: Let me check what ruby-odbc exposes without additional queries:
 
 Searched for files matching `**/investigations.md`, 1 match
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/investigations.md#1-1), lines 1 to 150
+Read [](file:///PROJECT/lib/super8/design/investigations.md#1-1), lines 1 to 150
 
 The investigations doc confirms: `get_info` sends a request to the server, so we should avoid it. The recommendation is to just record the DSN argument passed to `ODBC.connect` for MVP.
 
@@ -486,15 +486,15 @@ The `connection_id` ties each command to its connection. The `statement_id` ties
 
 johncip: let's create an architecture decision document summarizing this discussion. I'm deciding to yagni multiple connections per cassette. we also need to document it briefly as an assumption in the design doc, with supporting multiple connections as a possible future enhancement.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/adr_001_single_connection_per_cassette.md)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/design/adr_001_single_connection_per_cassette.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#1-1), lines 1 to 80
+Read [](file:///PROJECT/lib/super8/design/design_document.md#1-1), lines 1 to 80
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#75-75), lines 75 to 160
+Read [](file:///PROJECT/lib/super8/design/design_document.md#75-75), lines 75 to 160
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#155-155), lines 155 to 240
+Read [](file:///PROJECT/lib/super8/design/design_document.md#155-155), lines 155 to 240
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#235-235), lines 235 to 309
+Read [](file:///PROJECT/lib/super8/design/design_document.md#235-235), lines 235 to 309
 
 Now I'll update the design document to add the assumption and note about future enhancement, and answer the open question about multiple DSNs: 
 

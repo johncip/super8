@@ -2,7 +2,7 @@ User: for the super 8 project, which has design docs under lib/super8/design, I 
 
 GitHub Copilot: I'll examine the implementation plan to see the next tasks and determine if they can be grouped together. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
 Looking at the next tasks in Phase 2, let me examine them more closely to see if they can be grouped:
 
@@ -37,19 +37,19 @@ GitHub Copilot: I'll examine the existing Super8 code structure to understand wh
 
 Searched for files matching `**/lib/super8/**/*.rb`, 13 matches
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb#1-1), lines 1 to 50
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb#50-50), lines 50 to 92
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb#50-50), lines 50 to 92
 
 Now let me look at the current recording structure to understand what data we're working with: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/recording_database_wrapper.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/recording_database_wrapper.rb)
 
 Now let me look at one of the design documents to understand the cassette format: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md#1-1), lines 1 to 50
+Read [](file:///PROJECT/lib/super8/design/cassette_schema.md#1-1), lines 1 to 50
 
 Based on my examination of the existing code, here's a sketch for implementing tasks 1-4:
 
@@ -711,7 +711,7 @@ For the current implementation, this would just fail during playback with a `Com
 
 User: add a todo comment to super8.rb module that we need to either support or fail on multiple connects
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
 Using "Replace String in File"
 
@@ -727,11 +727,11 @@ User: all right. try to do the playback implementaiton now.
 
 GitHub Copilot: I'll implement the playback functionality based on our refined sketch. Let me first check the current state of the files and then make the necessary changes. 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/errors.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/errors.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
 Now I'll implement the playback functionality: 
 
@@ -747,9 +747,9 @@ Using "Multi-Replace String in Files"
 ```
 
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/playback_database_wrapper.rb)
+Created [](file:///PROJECT/lib/super8/lib/super8/playback_database_wrapper.rb)
 
-Created [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/playback_statement_wrapper.rb)
+Created [](file:///PROJECT/lib/super8/lib/super8/playback_statement_wrapper.rb)
 
 Using "Replace String in File"
 
@@ -767,7 +767,7 @@ Using "Replace String in File"
 ```
 Let me run the specs to see if the implementation works correctly: 
 
-Ran terminal command: cd /Users/john/Developer***REMOVED***/lib/super8 && bundle exec rspec
+Ran terminal command: cd /PROJECT/lib/super8 && bundle exec rspec
 
 The issue is that `@original_connect` is nil when `setup_recording_mode` tries to call it. This is because the instance variable is not being set properly. Let me fix the scoping issue: 
 
@@ -783,7 +783,7 @@ Ran terminal command: bundle exec rspec
 
 Great! The recording mode is working now - all the recording tests pass. There's just one failure related to a weird Ruby issue with the File class. Let me check what's happening in that specific test: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/cassette_spec.rb#40-40), lines 40 to 62
+Read [](file:///PROJECT/lib/super8/spec/super8/cassette_spec.rb#40-40), lines 40 to 62
 
 The issue is likely that the YAML loading in the enhanced `load` method is trying to load from a file that might not exist. Let me check what files are created in the test: 
 
@@ -799,7 +799,7 @@ Ran terminal command: bundle exec rspec 'spec/super8/cassette_spec.rb[1:3:2]' --
 
 Let me try to isolate the test by looking at the exact test structure and run just the failing one: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/cassette_spec.rb#50-50), lines 50 to 62
+Read [](file:///PROJECT/lib/super8/spec/super8/cassette_spec.rb#50-50), lines 50 to 62
 
 The issue is that the test creates an empty directory, but my enhanced `load` method now tries to read `commands.yml` which doesn't exist. Let me fix the cassette load method to handle this case properly for existing test compatibility: 
 

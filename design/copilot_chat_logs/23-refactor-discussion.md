@@ -14,41 +14,41 @@ some things to think about:
 
 - we're about to add the playback code, and nothing right now seems "closed for modification" -- what can be done differently to make adding playback a simpler operation?
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8)
+GitHub Copilot: Read [](file:///PROJECT/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib)
+Read [](file:///PROJECT/lib/super8/lib)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design)
+Read [](file:///PROJECT/lib/super8/design)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8)
+Read [](file:///PROJECT/lib/super8/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#1-1), lines 1 to 150
+Read [](file:///PROJECT/lib/super8/design/design_document.md#1-1), lines 1 to 150
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/statement_wrapper.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/statement_wrapper.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/config.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/config.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/errors.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/errors.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#150-150), lines 150 to 316
+Read [](file:///PROJECT/lib/super8/design/design_document.md#150-150), lines 150 to 316
 
 Let me also look at the spec files to understand current testing patterns and any playback discussions: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec)
+Read [](file:///PROJECT/lib/super8/spec)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8)
+Read [](file:///PROJECT/lib/super8/spec/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/cassette_schema.md#1-1), lines 1 to 100
+Read [](file:///PROJECT/lib/super8/design/cassette_schema.md#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/cassette_spec.rb)
+Read [](file:///PROJECT/lib/super8/spec/super8/cassette_spec.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8/odbc_interception_spec.rb#1-1), lines 1 to 200
+Read [](file:///PROJECT/lib/super8/spec/super8/odbc_interception_spec.rb#1-1), lines 1 to 200
 
 I have a good understanding of the codebase now. Let me synthesize a refactoring plan.
 
@@ -268,7 +268,7 @@ Does this direction make sense? Any aspects you'd like me to expand on or adjust
 
 User: let's write all of this out as a refactor_plan.md.
 
-GitHub Copilot: Created [](file:///Users/john/Developer***REMOVED***/lib/super8/design/refactor_plan.md)
+GitHub Copilot: Created [](file:///PROJECT/lib/super8/design/refactor_plan.md)
 
 Created refactor_plan.md with the full architecture proposal, migration steps, and open questions.
 
@@ -737,13 +737,13 @@ Want me to revise the refactoring plan with this cleaned-up interface?
 
 User: no, just show me what revisions are necessary, if any.
 
-GitHub Copilot: Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/refactor_plan.md#1-1), lines 1 to 100
+GitHub Copilot: Read [](file:///PROJECT/lib/super8/design/refactor_plan.md#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/refactor_plan.md#100-100), lines 100 to 200
+Read [](file:///PROJECT/lib/super8/design/refactor_plan.md#100-100), lines 100 to 200
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/refactor_plan.md#200-200), lines 200 to 280
+Read [](file:///PROJECT/lib/super8/design/refactor_plan.md#200-200), lines 200 to 280
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/refactor_plan.md#280-280), lines 280 to 369
+Read [](file:///PROJECT/lib/super8/design/refactor_plan.md#280-280), lines 280 to 369
 
 The plan is already close. Two changes based on our discussion:
 

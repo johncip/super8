@@ -8,39 +8,39 @@ GitHub Copilot: I'll examine the design docs for super8 and understand the curre
 
 Searched for files matching `**/lib/super8/design/**`, 20 matches
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/implementation_plan.md)
+Read [](file:///PROJECT/lib/super8/design/implementation_plan.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/api_support.md)
+Read [](file:///PROJECT/lib/super8/design/api_support.md)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#1-1), lines 1 to 100
+Read [](file:///PROJECT/lib/super8/design/design_document.md#1-1), lines 1 to 100
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/cassette.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/cassette.rb)
 
 Searched for regex `ODBC\.connect|connect.*block|use_cassette` (`**/lib/super8/**`), 20 results
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/design/design_document.md#150-150), lines 150 to 200
+Read [](file:///PROJECT/lib/super8/design/design_document.md#150-150), lines 150 to 200
 
 Now let me look at how the current implementation is structured to understand where to add the ODBC.connect interception: 
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8)
+Read [](file:///PROJECT/lib/super8/lib/super8)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/errors.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/errors.rb)
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/lib/super8/config.rb)
+Read [](file:///PROJECT/lib/super8/lib/super8/config.rb)
 
 Let me also check if there are any existing specs to understand the expected behavior: 
 
 Searched for files matching `**/*super8*spec.rb`, 1 match
 
-Read [](file:///Users/john/Developer***REMOVED***/lib/super8/spec/super8_spec.rb)
+Read [](file:///PROJECT/lib/super8/spec/super8_spec.rb)
 
 Now let me examine what the target real-world usage looks like in the codebase: 
 
 Searched for regex `ODBC\.connect` (`**/app/**`), 1 result
 
-Read [](file:///Users/john/Developer***REMOVED***/app/services/retalix_fetcher.rb#40-40), lines 40 to 60
+Read [](file:///PROJECT/app/services/retalix_fetcher.rb#40-40), lines 40 to 60
 
 Perfect! Now I have a clear understanding. Let me create a plan for implementing "Intercept ODBC.connect(dsn) (block form)":
 

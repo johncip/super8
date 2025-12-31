@@ -8,17 +8,17 @@ I'd like to also change the file extension for each of the chat logs from .txt t
 
 
 
-GitHub Copilot: Ran terminal command: mkdir -p /Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs
+GitHub Copilot: Ran terminal command: mkdir -p /PROJECT/lib/super8/design/copilot_chat_logs
 
-Ran terminal command: mv /Users/john/Developer***REMOVED***/docs/super8_design.md /Users/john/Developer***REMOVED***/lib/super8/design/design_document.md
+Ran terminal command: mv /PROJECT/docs/super8_design.md /PROJECT/lib/super8/design/design_document.md
 
-Ran terminal command: cd /Users/john/Developer***REMOVED***/docs/super8_chat_logs && for file in *.txt; do mv "$file" "/Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs/${file%.txt}.md"; done
+Ran terminal command: cd /PROJECT/docs/super8_chat_logs && for file in *.txt; do mv "$file" "/PROJECT/lib/super8/design/copilot_chat_logs/${file%.txt}.md"; done
 
-Ran terminal command: rmdir /Users/john/Developer***REMOVED***/docs/super8_chat_logs 2>/dev/null; true
+Ran terminal command: rmdir /PROJECT/docs/super8_chat_logs 2>/dev/null; true
 
-Ran terminal command: ls -la /Users/john/Developer***REMOVED***/lib/super8/design/
+Ran terminal command: ls -la /PROJECT/lib/super8/design/
 
-Ran terminal command: ls -la /Users/john/Developer***REMOVED***/lib/super8/design/copilot_chat_logs/
+Ran terminal command: ls -la /PROJECT/lib/super8/design/copilot_chat_logs/
 
 Perfect! All files have been reorganized under super8:
 
