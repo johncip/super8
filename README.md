@@ -30,7 +30,7 @@ I haven't tested on lower Ruby versions, but it may work.
  * It uses CSV from stdlib, so for Ruby 3.4+ you will need to add `gem "csv"`.
 
 
-## Usage
+## Configuration
 
 Configure Super8 in your test setup (e.g., `spec/spec_helper.rb`):
 
@@ -46,9 +46,9 @@ Super8.configure do |config|
 end
 ```
 
-## Configuration
+## Usage
 
-Use cassettes in your tests:
+Use cassettes in your tests with `use_cassette`:
 
 ```ruby
 RSpec.describe "ODBC stuff" do
@@ -71,7 +71,7 @@ Modes:
 Currently supported ODBC methods:
 - `ODBC` : `.connect`
 - `ODBC::Database`: `#run`
-- `ODBC::Statement`: `#fetch_all`, `#columns`, `#drop`, `#cancel`, `#close`
+- `ODBC::Statement`: `#columns`, `#fetch_all`, `#drop`, `#cancel`, `#close`
 
 
 ## Motivation
